@@ -142,7 +142,7 @@ export default function AngledSlider() {
           <h2 style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "clamp(34px, 5vw, 56px)",
-            fontWeight: 300, lineHeight: 1,
+            fontWeight: 500, lineHeight: 1,
             letterSpacing: "-0.02em",
             color: "#1a1a1a", margin: "0 0 16px",
           }}>

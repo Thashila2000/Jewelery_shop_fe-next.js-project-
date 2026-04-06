@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
     <>
       {/* 1. BLUR OVERLAY - Starts below the Navbar */}
       <div
-        className={`fixed inset-0 z-[55] bg-black/20 backdrop-blur-md transition-opacity duration-500 md:hidden ${
+        className={`fixed inset-0 z-[55] bg-black/20 backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden ${
           menuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         }`}
         style={{ top: currentHeight }} 
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
 
       {/* 2. MAIN NAVBAR */}
       <nav
-        className={`fixed inset-x-0 top-0 z-[100] transition-all duration-300 ${
+        className={`fixed inset-x-0 top-0 z-[100] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
           scrolled ? "bg-white/95 shadow-md h-16" : "bg-[#f9f7f4] h-20"
         }`}
       >
@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
 
       {/* 3. LEFT SIDEBAR DRAWER - Slides from left, sits under navbar */}
       <aside
-        className={`fixed left-0 z-[60] w-[280px] h-screen bg-white shadow-2xl transform transition-transform duration-500 ease-in-out md:hidden border-r border-gray-100 ${
+        className={`fixed left-0 z-[60] w-[280px] h-screen bg-white shadow-2xl transform transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden border-r border-gray-100 ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ top: currentHeight }}
@@ -134,16 +134,7 @@ const Navbar: React.FC = () => {
               ))}
             </ul>
           </nav>
-
-          <div className="mt-auto pb-24">
-            <Link 
-              href="/appointment" 
-              className="block w-full py-4 bg-[#1a1a1a] text-white text-center text-[10px] tracking-[0.2em] uppercase font-bold rounded-sm shadow-lg hover:bg-[#D4AF37] transition-all"
-              onClick={() => setMenuOpen(false)}
-            >
-              Book Appointment
-            </Link>
-          </div>
+          {/* Appointment button section removed from here */}
         </div>
       </aside>
 

@@ -39,7 +39,7 @@ export default function Carousel() {
   return (
     <div 
       className="relative w-full aspect-video md:aspect-none overflow-hidden bg-black"
-      style={isDesktop ? { height: '400px' } : {}} 
+      style={isDesktop ? { height: '520px' } : {}} 
     >
       <AnimatePresence mode="wait">
         <motion.div
