@@ -5,10 +5,10 @@ import { motion, useMotionValue, animate } from "framer-motion";
 import Image from "next/image";
 
 const slides = [
-  { id: 1, url: "/RingsCtag.JPG",      tag: "Rings",     name: "Solitaire Ring"    },
-  { id: 2, url: "/NecklaceCtag.JPG",   tag: "Necklaces", name: "Diamond Pendant"   },
-  { id: 3, url: "/EarringsCtag.WEBP",  tag: "Earrings",  name: "Pearl Drops"       },
-  { id: 4, url: "/BraceletsCtag.WEBP", tag: "Bracelets", name: "Gold Cuff"          },
+  { id: 1, url: "/RingsCtag.jpg",      tag: "Rings",     name: "Solitaire Ring"    },
+  { id: 2, url: "/NecklaceCtag.jpg",   tag: "Necklaces", name: "Diamond Pendant"   },
+  { id: 3, url: "/EarringsCtag.webp",  tag: "Earrings",  name: "Pearl Drops"       },
+  { id: 4, url: "/BraceletsCtag.webp", tag: "Bracelets", name: "Gold Cuff"          },
 ];
 
 const CARD_W  = 240;
