@@ -1,5 +1,4 @@
-// components/SideCart.tsx
-"use client"; // required for hooks and framer-motion in App Router
+"use client"; 
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
