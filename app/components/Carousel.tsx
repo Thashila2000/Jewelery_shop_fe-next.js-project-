@@ -11,10 +11,10 @@ interface Slide {
 }
 
 const slides: Slide[] = [
-  { src: "/hero1.jpg", text: "Discover Necklaces", sub: "Hand-selected diamonds" },
-  { src: "/hero2.png", text: "Timeless Elegance", sub: "For your most precious moments" },
-  { src: "/hero5.jpg", text: "Handcrafted Collections", sub: "Artistry in every detail" },
-  { src: "/hero4.jpg", text: "Royal Legacy Designs", sub: "Wear your story" },
+  { src: "/hero1.JPG", text: "Discover Necklaces", sub: "Hand-selected diamonds" },
+  { src: "/hero2.PNG", text: "Timeless Elegance", sub: "For your most precious moments" },
+  { src: "/hero5.JPG", text: "Handcrafted Collections", sub: "Artistry in every detail" },
+  { src: "/hero4.JPG", text: "Royal Legacy Designs", sub: "Wear your story" },
 ];
 
 export default function Carousel() {
