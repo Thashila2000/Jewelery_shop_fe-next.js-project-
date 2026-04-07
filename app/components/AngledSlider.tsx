@@ -141,14 +141,14 @@ export default function AngledSlider() {
           </span>
           <h2 style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "clamp(34px, 5vw, 56px)",
+            fontSize: "clamp(46px, 8vw, 72px)",
             fontWeight: 500, lineHeight: 1,
             letterSpacing: "-0.02em",
             color: "#1a1a1a", margin: "0 0 16px",
           }}>
             Our{" "}
             <em style={{ fontStyle: "italic", color: "rgba(177,141,43,0.85)" }}>
-              Collection
+              Collections
             </em>
           </h2>
           <div style={{

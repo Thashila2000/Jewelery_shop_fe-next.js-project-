@@ -4,6 +4,8 @@ import Carousel from "./components/Carousel";
 import AboutUsSection from "./components/AboutUsSection";
 import AngledSlider from "./components/AngledSlider";
 
+import SapphireBanner from "./components/SapphireBanner";
+
 const jewelryCollection = [
   { id: 1, url: "/RingsCtag.JPG", title: "The Solitaire" },
   { id: 2, url: "/NecklaceCtag.JPG", title: "Liquid Gold" },
@@ -14,7 +16,7 @@ const jewelryCollection = [
 
 export default function Home() {
   return (
-    // Changed bg-white to ensure no underlying dark layers
+    
     <main className="w-full bg-white flex flex-col p-0 m-0 mt-20 md:mt-24">
       
       <section className="w-full h-fit relative z-30">
@@ -27,6 +29,12 @@ export default function Home() {
       </div>
 
       <AngledSlider/>
+     
+     
+    
+           <SapphireBanner/>
+   
+      
     </main>
   );
 }
