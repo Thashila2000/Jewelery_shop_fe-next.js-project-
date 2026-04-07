@@ -24,7 +24,7 @@ export default function Home() {
       </section>
 
       {/* About Section Container */}
-     <div className="relative z-40 w-full bg-white -mt-30 -md:mt-30"> 
+     <div className="relative z-40 w-full bg-white "> 
         <AboutUsSection />
       </div>
 
