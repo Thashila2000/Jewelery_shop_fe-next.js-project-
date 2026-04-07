@@ -24,8 +24,11 @@ export default function SceneContent() {
     const margin = 2.0;
     const endX = (viewport.width / 2) - margin;
 
+    // UPDATED: initialY and finalY for mobile
+    // initialY: starting position
+    // finalY: lowered from -1.2 to -1.8 to move the stop position down
     const initialY = isMobile ? 0.8 : 0;
-    const finalY = isMobile ? -2.4 : 1.2;
+    const finalY = isMobile ? -2.2 : 1.2; 
 
     let targetX, targetY, targetScale;
 
