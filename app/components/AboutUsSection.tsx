@@ -11,7 +11,7 @@ export default function AboutUsSection() {
   return (
     <section 
       id="about-section" 
-      className="w-full h-[220dvh] relative bg-white m-0 p-0 overflow-visible"
+      className="w-full h-[170dvh] relative bg-white m-0 p-0 overflow-visible"
     >
       
       {/* 1. MASTER BACKGROUND WRAPPER (Spans 220dvh) */}

@@ -24,8 +24,9 @@ export default function SceneContent() {
     const margin = 2.0;
     const endX = (viewport.width / 2) - margin;
 
-    const initialY = isMobile ? 0.8 : 0;
-    const finalY = isMobile ? -1.2 : 1.2;
+    // UPDATED: Increased initialY and finalY for mobile to clear buttons
+    const initialY = isMobile ? 1.2 : 0;
+    const finalY = isMobile ? 1.6 : 1.2; 
 
     let targetX, targetY, targetScale;
 

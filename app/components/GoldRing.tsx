@@ -1,18 +1,29 @@
 "use client";
 
 import * as THREE from 'three';
-import React, { useRef, useLayoutEffect } from 'react';
-// 1. Changed GroupProps to ThreeElements
-import { useFrame, ThreeElements } from '@react-three/fiber';
+import React, { useRef, useLayoutEffect, useMemo } from 'react';
+import { useFrame, ThreeElements, useThree } from '@react-three/fiber';
 import { Torus, Environment, useEnvironment } from '@react-three/drei';
 import gsap from 'gsap';
 
-// 2. Use ThreeElements['group'] to define the props
 export default function GoldRing(props: ThreeElements['group']) {
-  // Use 'any' or 'THREE.Group' for the group ref if passing props to it
   const groupRef = useRef<THREE.Group>(null!);
   const ringRef = useRef<THREE.Mesh>(null!);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null!);
+  
+  // Get viewport size to handle responsive scaling
+  const { size } = useThree();
+
+  // Determine scale based on width
+  // Desktop (>1024px): 1
+  // Tablet (768px - 1024px): 0.75 (Reduced)
+  // Mobile (<768px): 1 (As per your request to keep it okay)
+  const responsiveScale = useMemo(() => {
+    if (size.width >= 768 && size.width <= 1024) {
+      return 0.75; // Reduced size for Tablet
+    }
+    return 1; // Default for Desktop and Mobile
+  }, [size.width]);
 
   const envMap = useEnvironment({
     files: 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/peppermint_powerplant_2_1k.hdr'
@@ -59,6 +70,8 @@ export default function GoldRing(props: ThreeElements['group']) {
 
       <Torus
         ref={ringRef}
+        // Apply the responsive scale here
+        scale={[responsiveScale, responsiveScale, responsiveScale]}
         args={[1, 0.15, 32, 100]}
         castShadow
         receiveShadow
