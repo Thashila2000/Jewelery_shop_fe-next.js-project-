@@ -23,10 +23,10 @@ export default function Home() {
       </section>
 
      {/* About Section Container */}
-      {/* <div className="relative z-40 w-full bg-white"> 
+     <div className="relative z-40 w-full bg-white"> 
         <AboutUsSection />
       </div>
-      */}
+    
       
       {/* Wrapper for Slider */}
       <div className="relative w-full"> 
