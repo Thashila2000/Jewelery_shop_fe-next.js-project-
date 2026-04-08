@@ -22,10 +22,11 @@ export default function Home() {
         <Carousel />
       </section>
 
-      {/* About Section Container */}
-      <div className="relative z-40 w-full bg-white"> 
+     {/* About Section Container */}
+      {/* <div className="relative z-40 w-full bg-white"> 
         <AboutUsSection />
       </div>
+      */}
       
       {/* Wrapper for Slider */}
       <div className="relative w-full"> 
