@@ -28,7 +28,7 @@ export default function SceneContent() {
     // initialY: starting position
     // finalY: lowered from -1.2 to -1.8 to move the stop position down
     const initialY = isMobile ? 0.8 : 0;
-    const finalY = isMobile ? -2.2 : 1.2; 
+    const finalY = isMobile ? -2.0 : 1.2; 
 
     let targetX, targetY, targetScale;
 

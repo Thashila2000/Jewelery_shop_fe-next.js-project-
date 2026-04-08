@@ -33,7 +33,7 @@ export default function AboutUsSection() {
       </div>
 
       {/* 2. STICKY 3D LAYER (z-10) */}
-      <div className="sticky top-0 h-[100dvh] w-full z-10 overflow-hidden pointer-events-none">
+      <div className="sticky top-0 h-[190dvh] w-full z-10 overflow-hidden pointer-events-none">
         <Canvas
           // 1. Correct Shadow Type for Three.js 0.183
           shadows={{ type: THREE.PCFShadowMap }}
