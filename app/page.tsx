@@ -28,10 +28,9 @@ export default function Home() {
       </div>
     
       
-      {/* Wrapper for Slider */}
-      <div className="relative w-full"> 
+      
         <AngledSlider/>
-      </div>
+    
 
       {/* GUARANTEED SPACER:       */}
         .

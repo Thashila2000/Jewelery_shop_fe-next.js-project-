@@ -11,18 +11,17 @@ export default function GoldRing(props: ThreeElements['group']) {
   const ringRef = useRef<THREE.Mesh>(null!);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null!);
   
-  // Get viewport size to handle responsive scaling
   const { size } = useThree();
 
-  // Determine scale based on width
-  // Desktop (>1024px): 1
-  // Tablet (768px - 1024px): 0.75 (Reduced)
-  // Mobile (<768px): 1 (As per your request to keep it okay)
+  // Updated logic to handle mobile scaling
   const responsiveScale = useMemo(() => {
-    if (size.width >= 768 && size.width <= 1024) {
-      return 0.75; // Reduced size for Tablet
+    if (size.width < 768) {
+      return 0.55; // REDUCED for Mobile
     }
-    return 1; // Default for Desktop and Mobile
+    if (size.width >= 768 && size.width <= 1024) {
+      return 0.75; // Reduced for Tablet
+    }
+    return 1; // Default for Desktop
   }, [size.width]);
 
   const envMap = useEnvironment({
@@ -70,7 +69,6 @@ export default function GoldRing(props: ThreeElements['group']) {
 
       <Torus
         ref={ringRef}
-        // Apply the responsive scale here
         scale={[responsiveScale, responsiveScale, responsiveScale]}
         args={[1, 0.15, 32, 100]}
         castShadow
