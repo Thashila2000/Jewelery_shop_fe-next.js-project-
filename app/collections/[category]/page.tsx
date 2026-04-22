@@ -5,39 +5,22 @@ import { use, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
+import { Heart, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { collectionsData } from "@/app/data/CollectionsData";
 
 const SORT_OPTIONS = ["Featured", "Price: Low to High", "Price: High to Low", "New Arrivals"];
 
 /* ─── CARD ─────────────────────────────────────────────────────── */
-function JewelCard({ product, idx }: { product: any; idx: number }) {
+function JewelCard({ product, idx, category }: { product: any; idx: number; category: string }) {
   const images: string[] = [product.image, product.image, product.image];
-  const metals = ["18k Yellow Gold", "18k White Gold", "18k Rose Gold", "Platinum"];
-  const sizes  = ["5", "6", "7", "8", "9"];
+  const [imgIdx,     setImgIdx]     = useState(0);
+  const [wishlisted, setWishlisted] = useState(false);
 
-  const metalColors: Record<string, string> = {
-    "18k Yellow Gold": "#d4a843",
-    "18k White Gold":  "#c8c8c8",
-    "18k Rose Gold":   "#c9837a",
-    "Platinum":        "#9aa0ad",
-  };
-
-  const [imgIdx,        setImgIdx]        = useState(0);
-  const [selectedMetal, setSelectedMetal] = useState(metals[0]);
-  const [selectedSize,  setSelectedSize]  = useState<string | null>(null);
-  const [wishlisted,    setWishlisted]    = useState(false);
-  const [adding,        setAdding]        = useState(false);
-  const [added,         setAdded]         = useState(false);
 
   const nextImg = (e: React.MouseEvent) => { e.stopPropagation(); setImgIdx(p => (p + 1) % images.length); };
   const prevImg = (e: React.MouseEvent) => { e.stopPropagation(); setImgIdx(p => (p - 1 + images.length) % images.length); };
 
-  const handleEnquire = () => {
-    if (added) return;
-    setAdding(true);
-    setTimeout(() => { setAdding(false); setAdded(true); setTimeout(() => setAdded(false), 2200); }, 900);
-  };
+
 
   const badgeClass: Record<string, string> = {
     "New":        "jc-badge-new",
@@ -123,49 +106,14 @@ function JewelCard({ product, idx }: { product: any; idx: number }) {
           )}
         </div>
 
-        {/* Metal */}
-        <div className="jc-section">
-          <p className="jc-slabel">Metal</p>
-          <div className="jc-swatches">
-            {metals.map(m => (
-              <button
-                key={m}
-                className={`jc-swatch${selectedMetal === m ? " jc-swatch-on" : ""}`}
-                style={{ background: metalColors[m] }}
-                onClick={() => setSelectedMetal(m)}
-                title={m}
-              />
-            ))}
-          </div>
-          <p className="jc-sval">{selectedMetal}</p>
-        </div>
 
-        {/* Size */}
-        <div className="jc-section">
-          <p className="jc-slabel">Size</p>
-          <div className="jc-sizes">
-            {sizes.map(s => (
-              <button
-                key={s}
-                className={`jc-size${selectedSize === s ? " jc-size-on" : ""}`}
-                onClick={() => setSelectedSize(s)}
-              >{s}</button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* ── FOOTER ── */}
       <div className="jc-footer">
-        <button
-          className={`jc-cta${added ? " jc-cta-done" : ""}`}
-          onClick={handleEnquire}
-          disabled={adding || added}
-        >
-          {adding ? <><Loader2 size={13} className="jc-spin" /> Sending…</>
-          : added  ? <><Check size={13} /> Enquiry Sent</>
-          :           <><ShoppingCart size={13} /> Enquire Now</>}
-        </button>
+        <Link href={`/collections/${category}/${product.id}`} className="jc-cta">
+          View Details
+        </Link>
       </div>
     </motion.div>
   );
@@ -376,33 +324,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         .jc-price-orig { font-size: 12px; color: #bbb; text-decoration: line-through; font-family: 'DM Sans', sans-serif; }
         .jc-discount { font-size: 10px; font-weight: 500; color: #3a9a5c; letter-spacing: 0.04em; }
 
-        /* Sections */
-        .jc-section { display: flex; flex-direction: column; gap: 5px; }
-        .jc-slabel { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: #aaa; margin: 0; }
-        .jc-sval { font-size: 10px; color: #777; margin: 0; }
 
-        /* Metal swatches */
-        .jc-swatches { display: flex; gap: 7px; }
-        .jc-swatch {
-          width: 19px; height: 19px; border-radius: 50%;
-          border: 2px solid transparent; cursor: pointer;
-          transition: border-color 0.25s, transform 0.2s; outline: none;
-        }
-        .jc-swatch:hover { transform: scale(1.15); }
-        .jc-swatch-on { border-color: #b18d2b; box-shadow: 0 0 0 2px rgba(177,141,43,0.25); }
-
-        /* Sizes */
-        .jc-sizes { display: flex; flex-wrap: wrap; gap: 6px; }
-        .jc-size {
-          min-width: 32px; height: 28px; padding: 0 7px;
-          border-radius: 2px; border: 1px solid #ddd;
-          background: #fff;
-          font-size: 11px; font-weight: 400; color: #555;
-          cursor: pointer; transition: all 0.2s;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .jc-size:hover { border-color: #b18d2b; color: #1a1a1a; }
-        .jc-size-on { background: #b18d2b; border-color: #b18d2b; color: #fff; }
 
         /* Footer */
         .jc-footer {
@@ -416,14 +338,10 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
           font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
           letter-spacing: 0.28em; text-transform: uppercase;
           background: #1a1a1a; color: #fff; border: none;
-          cursor: pointer; border-radius: 1px;
+          cursor: pointer; border-radius: 1px; text-decoration: none;
           transition: background 0.35s, letter-spacing 0.3s;
         }
-        .jc-cta:hover:not(:disabled) { background: #b18d2b; letter-spacing: 0.36em; }
-        .jc-cta:disabled { opacity: 0.65; cursor: default; }
-        .jc-cta-done { background: #2d6e45 !important; }
-        .jc-spin { animation: jcspin 0.8s linear infinite; }
-        @keyframes jcspin { to { transform: rotate(360deg); } }
+        .jc-cta:hover { background: #b18d2b; letter-spacing: 0.36em; color: #fff; }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 1024px) {
@@ -473,7 +391,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         {/* GRID */}
         <div className="cp-grid">
           {sorted.map((product, idx) => (
-            <JewelCard key={product.id} product={product} idx={idx} />
+            <JewelCard key={product.id} product={product} idx={idx} category={category} />
           ))}
         </div>
       </div>
