@@ -125,52 +125,48 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         /* ── HERO ── */
         .cp-hero {
           position: relative;
-          height: clamp(200px, 28vw, 340px);
+          height: clamp(180px, 22vw, 300px);
           overflow: hidden;
           margin-bottom: 44px;
+          width: 100%;
         }
         .cp-hero img {
           position: absolute; inset: 0;
           width: 100%; height: 100%;
-          object-fit: cover;
-          filter: brightness(0.4);
+          object-fit: cover !important;
+          filter: brightness(0.38);
           transform: scale(1.06);
           transition: transform 8s ease;
         }
-        .cp-hero:hover img { transform: scale(1.0); }
         .cp-hero-overlay {
           position: absolute; inset: 0;
-          background: linear-gradient(160deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+          background: linear-gradient(135deg, rgba(0,0,0,0.78) 0%, transparent 65%);
           display: flex; flex-direction: column; justify-content: space-between;
-          padding: clamp(1.2rem, 3.5vw, 3rem);
+          padding: clamp(1.5rem, 4vw, 3.5rem);
           z-index: 2;
         }
 
         /* Breadcrumb — top of hero */
         .cp-crumb {
           font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
-          color: rgba(255,255,255,0.5); margin: 0;
+          color: rgba(255,255,255,0.55); margin: 0;
         }
         .cp-crumb a { color: inherit; text-decoration: none; transition: color 0.3s; }
         .cp-crumb a:hover { color: #d4af37; }
         .cp-crumb span { color: #d4af37; }
 
         /* Hero bottom text */
-        .cp-hero-bottom {}
         .cp-hero-tag {
           font-size: 9px; letter-spacing: 0.6em; text-transform: uppercase;
-          color: #d4af37; margin: 0 0 6px;
+          color: #d4af37; margin-bottom: 8px; margin-top: 24px;
         }
         .cp-hero-h1 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(32px, 5vw, 64px);
-          font-weight: 400; font-style: italic; line-height: 0.95;
-          color: #fff; margin: 0 0 10px;
+          font-size: clamp(44px, 7vw, 90px);
+          font-weight: 400; font-style: italic; line-height: 0.9;
+          color: #fff; margin-bottom: 16px;
         }
-        .cp-hero-p {
-          font-size: 11px; font-weight: 300;
-          color: rgba(255,255,255,0.6); line-height: 1.7; max-width: 360px; margin: 0;
-        }
+        .cp-hero-p { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.62); line-height: 1.8; max-width: 380px; }
 
         /* ── TOOLBAR ── */
         .cp-toolbar {
@@ -321,9 +317,11 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         }
         @media (max-width: 580px) {
           .cp-page { padding-top: 64px; }
-          .cp-hero { height: 240px; margin-bottom: 28px; }
-          .cp-hero-h1 { font-size: 30px; }
-          .cp-hero-p { display: none; }
+          .cp-hero-tag { margin-top: 0; }
+          .cp-crumb { padding-top: 40px; }
+          .cp-hero { height: 300px; margin-bottom: 28px; }
+          .cp-hero-overlay { padding: 20px; }
+          .cp-hero-h1 { font-size: 40px; }
           .cp-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px 80px; }
           .cp-toolbar { padding: 0 12px 26px; }
           .jc-body { padding: 12px 13px 0; gap: 9px; }
