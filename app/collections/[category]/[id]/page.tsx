@@ -49,11 +49,18 @@ export default function ProductDetailPage({
         *, *::before, *::after { box-sizing: border-box; }
 
         .dp-page { background:#fff; min-height:100vh; color:#1a1a1a; font-family:'DM Sans',sans-serif; padding-top:80px; }
+         
 
+        /* Added margin-top specifically for mobile breadcrumbs */
+       .dp-crumb { 
+        padding: 16px 16px 0; 
+        margin-top: 10px; 
+      }
         .dp-crumb { padding:24px clamp(1.5rem,6vw,5rem) 0; font-size:10px; letter-spacing:0.38em; text-transform:uppercase; color:#aaa; }
         .dp-crumb a { color:inherit; text-decoration:none; transition:color 0.3s; }
         .dp-crumb a:hover { color:#b18d2b; }
         .dp-crumb span { color:#b18d2b; }
+        
 
         .dp-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,6rem); padding:36px clamp(1.5rem,6vw,5rem) 80px; max-width:1400px; margin:0 auto; }
 
