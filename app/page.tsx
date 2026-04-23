@@ -33,7 +33,7 @@ export default function Home() {
     
 
       {/* GUARANTEED SPACER:       */}
-        .
+        
        <div className="h-20 md:h-40 w-full bg-white" aria-hidden="true" />
      
       <section className="relative z-10">
