@@ -16,6 +16,7 @@ export default function ProductDetailPage({
   const { category, id } = use(params);
   const categoryData = collectionsData[category];
   const product = categoryData?.products.find((p) => p.id === Number(id));
+  
   if (!product || !categoryData) notFound();
 
   const [imgIdx,     setImgIdx]     = useState(0);
@@ -55,6 +56,7 @@ export default function ProductDetailPage({
 
         /* ── BREADCRUMB ── */
         .dp-crumb {
+          margin-top: 40px; /* Added requested margin top */
           padding: 24px clamp(1.5rem, 6vw, 5rem) 0;
           font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
           color: #aaa;
@@ -91,7 +93,6 @@ export default function ProductDetailPage({
         }
         .dp-main-img-wrap:hover .dp-main-img { transform: scale(1.04); }
 
-        /* Image nav arrows */
         .dp-img-prev, .dp-img-next {
           position: absolute; top: 50%; transform: translateY(-50%);
           width: 36px; height: 36px; border-radius: 50%;
@@ -107,14 +108,12 @@ export default function ProductDetailPage({
           background: #b18d2b; border-color: #b18d2b; color: #fff;
         }
 
-        /* Gold accent line across bottom of main image */
         .dp-img-accent {
           position: absolute; bottom: 0; left: 0; right: 0;
           height: 3px;
           background: linear-gradient(to right, #b18d2b, #d4af37, #b18d2b);
         }
 
-        /* Thumbnails */
         .dp-thumbs {
           display: flex; gap: 8px;
         }
@@ -133,11 +132,9 @@ export default function ProductDetailPage({
         /* ── INFO PANEL ── */
         .dp-info { display: flex; flex-direction: column; gap: 28px; }
 
-        /* Top meta */
         .dp-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .dp-sku { font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase; color: #bbb; }
 
-        /* Badge */
         .dp-badge {
           font-size: 8px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase;
           padding: 4px 10px; border-radius: 2px;
@@ -146,7 +143,6 @@ export default function ProductDetailPage({
         .dp-badge-best { background: #1a1a1a; color: #d4af37; border: 1px solid #d4af37; }
         .dp-badge-lim  { background: transparent; color: #888; border: 1px solid #ccc; }
 
-        /* Name */
         .dp-tagline {
           font-size: 9px; letter-spacing: 0.55em; text-transform: uppercase;
           color: #b18d2b; margin: 0;
@@ -158,14 +154,12 @@ export default function ProductDetailPage({
           line-height: 1.0; color: #1a1a1a; margin: 8px 0 0;
         }
 
-        /* Divider */
         .dp-rule {
           height: 1px;
           background: linear-gradient(to right, #b18d2b 0%, #ece8e1 60%, transparent 100%);
           border: none; margin: 0;
         }
 
-        /* Price */
         .dp-price-row { display: flex; align-items: baseline; gap: 12px; }
         .dp-price {
           font-family: 'DM Serif Display', serif;
@@ -180,7 +174,6 @@ export default function ProductDetailPage({
           font-size: 11px; font-weight: 500; color: #3a9a5c; letter-spacing: 0.04em;
         }
 
-        /* Description */
         .dp-description {
           font-size: 14px; font-weight: 300;
           line-height: 1.85; color: #555;
@@ -188,7 +181,6 @@ export default function ProductDetailPage({
           padding-left: 18px;
         }
 
-        /* Details list */
         .dp-details-title {
           font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
           color: #aaa; margin: 0 0 12px;
@@ -204,7 +196,6 @@ export default function ProductDetailPage({
           width: 5px; height: 1px; background: #b18d2b;
         }
 
-        /* Actions */
         .dp-actions { display: flex; gap: 10px; }
         .dp-enquire {
           flex: 1; height: 50px;
@@ -227,7 +218,6 @@ export default function ProductDetailPage({
         .dp-wish:hover { border-color: #b18d2b; background: #fff7e6; }
         .dp-wish-on { border-color: #b18d2b; background: #fff7e6; }
 
-        /* Info strips */
         .dp-strips { display: flex; flex-direction: column; gap: 0; border: 1px solid #ece8e1; }
         .dp-strip {
           display: flex; align-items: flex-start; gap: 14px;
@@ -239,18 +229,16 @@ export default function ProductDetailPage({
         .dp-strip-title { font-weight: 500; color: #1a1a1a; margin: 0 0 3px; font-size: 12px; }
         .dp-strip-desc  { font-weight: 300; color: #777; margin: 0; line-height: 1.6; font-size: 11px; }
 
-        /* Spin */
         .dp-spin { animation: dpspin 0.8s linear infinite; }
         @keyframes dpspin { to { transform: rotate(360deg); } }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 900px) {
           .dp-layout { grid-template-columns: 1fr; gap: 32px; padding: 24px 20px 80px; }
           .dp-images { position: static; }
         }
         @media (max-width: 480px) {
           .dp-page { padding-top: 64px; }
-          .dp-crumb { padding: 16px 16px 0; }
+          .dp-crumb { padding: 16px 16px 0; margin-top: 20px; }
           .dp-layout { padding: 20px 16px 80px; }
           .dp-name { font-size: 28px; }
           .dp-price { font-size: 26px; }
@@ -374,7 +362,7 @@ export default function ProductDetailPage({
               >
                 {enquiring ? <><Loader2 size={14} className="dp-spin" /> Sending…</>
                 : enquired  ? <><Check size={14} /> Enquiry Sent</>
-                :              "Enquire Now"}
+                :               "Enquire Now"}
               </button>
               <button
                 className={`dp-wish${wishlisted ? " dp-wish-on" : ""}`}
