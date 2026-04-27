@@ -43,10 +43,10 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
 }
 
 const VALUES = [
-  { num: "I",   title: "Heritage",   body: "Over a century of goldsmithing tradition flows through every piece we create — handed down across generations of master craftsmen." },
-  { num: "II",  title: "Precision",  body: "Each stone is hand-selected and set under magnification. We accept nothing less than perfection at every stage of the process." },
-  { num: "III", title: "Rarity",     body: "We work only with conflict-free gemstones and ethically sourced precious metals, certified to the highest international standards." },
-  { num: "IV",  title: "Eternity",   body: "We stand behind every piece with a lifetime craftsmanship guarantee. A Maison jewel is made to be passed on." },
+  { num: "I",   title: "Origin",    body: "We source directly from the earth, celebrating the unique imperfections and raw character of every gemstone found." },
+  { num: "II",  title: "Artistry",  body: "Our Kandy-based workshop preserves traditional Sri Lankan lapidary techniques while embracing modern, minimalist design." },
+  { num: "III", title: "Integrity", body: "Transparency is our foundation. We use only ethically sourced raw materials, ensuring a positive impact on our local communities." },
+  { num: "IV",  title: "Connection", body: "Every piece is a conversation between nature and wearer. We create jewels meant to be a permanent part of your personal story." },
 ];
 
 export default function AboutPage() {
@@ -173,6 +173,7 @@ export default function AboutPage() {
           margin-bottom: 28px;
         }
         .ab-intro-body {
+          font-family: 'DM Sans', sans-serif;
           font-size: 14px; font-weight: 300; line-height: 1.9;
           color: #555; max-width: 440px;
         }
@@ -206,7 +207,7 @@ export default function AboutPage() {
         .ab-stat:nth-child(3), .ab-stat:nth-child(4) { border-bottom: none; }
         
         .ab-stat-num {
-          font-family: 'Playfair Display', serif; /* Clearer, bolder font for numbers */
+          font-family: serif;
           font-size: clamp(52px, 7vw, 88px);
           font-weight: 700;
           color: #1a1a1a; 
@@ -214,9 +215,9 @@ export default function AboutPage() {
           margin-bottom: 12px;
           letter-spacing: -0.02em;
         }
-        .ab-stat-num span { color: #b18d2b; } /* Highlight the actual number */
         
         .ab-stat-label {
+          font-family: 'DM Sans', sans-serif;
           font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
           color: #999;
           font-weight: 500;
@@ -266,6 +267,7 @@ export default function AboutPage() {
           color: #1a1a1a;
         }
         .ab-section-body {
+          font-family: 'DM Sans', sans-serif;
           font-size: 14px; font-weight: 300; line-height: 1.8;
           color: #777; max-width: 380px;
         }
@@ -289,7 +291,15 @@ export default function AboutPage() {
           font-size: clamp(22px, 2.5vw, 30px); color: #1a1a1a;
           margin-bottom: 16px;
         }
-        .ab-value-body { font-size: 12px; font-weight: 300; line-height: 1.8; color: #666; }
+        
+        
+        .ab-value-body { 
+          fontFamily: "'Cormorant Garamond', serif",
+          font-size: 12px; 
+          font-weight: 300; 
+          line-height: 1.8; 
+          color: #666; 
+        }
 
         /* ── CTA ── */
         .ab-cta {
@@ -299,12 +309,14 @@ export default function AboutPage() {
         }
         .ab-cta-flex { display: flex; justify-content: space-between; align-items: center; gap: 40px; }
         .ab-btn-dark {
+          font-family: 'DM Sans', sans-serif;
           padding: 18px 38px; background: #1a1a1a; color: #ffffff;
           font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none;
           transition: 0.3s;
         }
         .ab-btn-dark:hover { opacity: 0.8; }
         .ab-btn-outline {
+          font-family: 'DM Sans', sans-serif;
           padding: 18px 38px; border: 1px solid #1a1a1a; color: #1a1a1a;
           font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none;
           transition: 0.3s;
@@ -327,29 +339,33 @@ export default function AboutPage() {
           <div className="ab-hero-bg" />
           <div className="ab-hero-grid" />
           <motion.div className="ab-hero-content" style={{ y: heroY, opacity: heroOpacity }}>
-            <span className="ab-hero-eyebrow">Est. 1923 · Antwerp</span>
+            <span className="ab-hero-eyebrow">Est. 2010 · Kandy</span>
             <h1 className="ab-hero-title">The Art of<br /><em>Being</em><br />Maison</h1>
-            <p className="ab-hero-sub">Found in the raw earth for a craftsman worthy of releasing it.</p>
+            <p className="ab-hero-sub">Earth-born gemstones for the craftsman worthy of releasing them.</p>
             <div className="ab-hero-line" />
           </motion.div>
-          <div className="ab-hero-side">Antwerp · Paris · London</div>
+          <div className="ab-hero-side">Kandy · Colombo · Galle</div>
           <div className="ab-hero-scroll">Scroll</div>
         </section>
 
-        {/* EYE-CATCHING INTRO SECTION */}
+        {/* INTRO SECTION */}
         <section className="ab-intro">
           <Reveal className="ab-intro-left">
             <span className="ab-intro-label">Our Foundation</span>
             <h2 className="ab-intro-heading">Where precious<br />things are born</h2>
             <div className="ab-intro-rule" />
-            <p className="ab-intro-body">In 1923, Pierre Maison opened a small workshop on the Antwerp diamond exchange. One hundred years later, that rule still governs every stage of our process.</p>
+            <p className="ab-intro-body">
+              In 2010, our journey began with a vision to celebrate the organic beauty of raw gemstones. 
+              Over a decade later, the art of honoring the natural, unrefined spirit of each stone remains 
+              the heartbeat of every piece we craft.
+            </p>
           </Reveal>
           <div className="ab-intro-right">
             {[
-              { num: 100, suffix: "+", label: "Years of Heritage" }, 
-              { num: 12, suffix: "K+", label: "Masterpieces" }, 
-              { num: 3, label: "Global Ateliers" }, 
-              { num: 40, suffix: "+", label: "Master Artisans" }
+              { num: 16, suffix: "+", label: "Years of Experience" }, 
+              { num: 8, suffix: "K+", label: "Gemstones Sourced" }, 
+              { num: 1, label: "Flagship Atelier" }, 
+              { num: 15, suffix: "+", label: "Master Artisans" }
             ].map((stat, i) => (
               <div className="ab-stat" key={i}>
                 <div className="ab-stat-num">
@@ -364,9 +380,11 @@ export default function AboutPage() {
         {/* MARQUEE */}
         <div className="ab-marquee-wrap">
           <div className="ab-marquee">
-            {[...Array(2)].map((_, set) => ["Heritage & Craft", "Handmade in Antwerp", "Ethical Sourcing", "Since 1923"].map((text, i) => (
-              <span key={`${set}-${i}`} className="ab-marquee-item">{text}</span>
-            )))}
+            {[...Array(2)].map((_, set) => 
+              ["Natural Raw Gems", "Handcrafted in Kandy", "Ethical Sourcing", "Since 2010"].map((text, i) => (
+                <span key={`${set}-${i}`} className="ab-marquee-item">{text}</span>
+              ))
+            )}
           </div>
         </div>
 
@@ -378,7 +396,7 @@ export default function AboutPage() {
                 <span className="ab-section-eyebrow">Our Principles</span>
                 <h2 className="ab-section-title">Four pillars of<br />the Maison</h2>
               </div>
-              <p className="ab-section-body">Commitments that shape every decision we make, every stone we select.</p>
+              <p className="ab-section-body">Commitments that shape every decision we make, every raw stone we select.</p>
             </div>
             <div className="ab-values-grid">
               {VALUES.map((v, i) => (

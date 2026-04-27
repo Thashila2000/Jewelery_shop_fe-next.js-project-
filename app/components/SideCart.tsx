@@ -199,7 +199,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
 
               .total-val {
-                font-family: 'Cormorant Garamond', serif;
+                font-family: 'DM Serif Display', serif;
                 font-size: 24px;
                 font-weight: 600;
               }
