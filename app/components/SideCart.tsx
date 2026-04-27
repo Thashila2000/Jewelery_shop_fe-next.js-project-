@@ -1,106 +1,327 @@
-"use client"; 
+"use client";
 
-import { useEffect, useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
 
-interface CartItem {
-  name: string;
-  price: string;
-  image: string;
-  quantity?: number;
+interface SideCartProps {
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function SideCart({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const router = useRouter();
-
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCart(storedCart);
-  }, [isOpen]);
-
-  const removeItem = (index: number) => {
-    const updated = [...cart];
-    updated.splice(index, 1);
-    localStorage.setItem("cart", JSON.stringify(updated));
-    setCart(updated);
-  };
-
-  const subtotal = cart.reduce((acc, item) => {
-    const cleanPrice = Number(item.price.replace(/[^\d]/g, ""));
-    return acc + cleanPrice * (item.quantity || 1);
-  }, 0);
+export default function SideCart({ isOpen, onClose }: SideCartProps) {
+  const { items, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          transition={{ duration: 0.4 }}
-          className="fixed top-0 right-0 z-50 flex flex-col h-full bg-white border-l border-gray-200 shadow-lg w-80"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <button onClick={onClose}>
-              <FiX className="w-5 h-5 text-gray-500 hover:text-black" />
-            </button>
-          </div>
+        <>
+          {/* BLURRED OVERLAY */}
+          <motion.div
+            className="side-cart-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
 
-          {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto divide-y divide-gray-400">
-            {cart.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500">Your cart is empty.</p>
-            ) : (
-              cart.map((item, idx) => (
-                <div key={idx} className="relative flex items-center p-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="object-cover w-16 h-16 rounded"
-                  />
-                  <div className="flex-1 ml-4">
-                    <p className="text-sm font-semibold">{item.name}</p>
-                    <p className="text-sm text-gray-900">
-                      {item.quantity || 1} × ₹{Number(item.price.replace(/[^\d]/g, ""))}
-                    </p>
-                  </div>
-                  <button onClick={() => removeItem(idx)}>
-                    <FiX className="w-4 h-4 text-gray-500 hover:text-red-500" />
-                  </button>
+          {/* DRAWER */}
+          <motion.div
+            className="side-cart-drawer"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+          >
+            <style>{`
+              .side-cart-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                z-index: 999;
+              }
+
+              .side-cart-drawer {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 420px;
+                height: 100vh;
+                background: #ffffff;
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                box-shadow: -10px 0 50px rgba(0,0,0,0.1);
+              }
+
+              .side-cart-header {
+                padding: 30px 24px;
+                border-bottom: 1px solid #f0ece6;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              }
+
+              .side-cart-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 28px;
+                font-weight: 500;
+                margin: 0;
+                color: #1a1a1a;
+              }
+
+              .side-cart-title em {
+                font-style: italic;
+                color: #b18d2b;
+              }
+
+              .close-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #1a1a1a;
+                padding: 5px;
+              }
+
+              .side-cart-items {
+                flex: 1;
+                overflow-y: auto;
+                padding: 24px;
+              }
+
+              .side-cart-item {
+                display: flex;
+                gap: 16px;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #f5f3ef;
+              }
+
+              .side-cart-img {
+                width: 80px;
+                height: 100px;
+                background: #f7f7f7;
+                overflow: hidden;
+                flex-shrink: 0;
+              }
+
+              .side-cart-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+
+              .item-details { flex: 1; position: relative; }
+
+              .item-name {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 18px;
+                font-weight: 500;
+                margin: 0 0 4px;
+                color: #1a1a1a;
+              }
+
+              .item-price {
+                font-family: 'DM Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                color: #444;
+                margin-bottom: 12px;
+              }
+
+              .item-actions {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: auto;
+              }
+
+              .qty-mini {
+                display: flex;
+                align-items: center;
+                border: 1px solid #e8e4de;
+                width: fit-content;
+              }
+
+              .qty-mini-btn {
+                background: none;
+                border: none;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: #1a1a1a;
+              }
+
+              .qty-mini-val {
+                width: 30px;
+                text-align: center;
+                font-size: 12px;
+                color: #1a1a1a;
+              }
+
+              .item-delete-btn {
+                background: none;
+                border: none;
+                color: #1a1a1a;
+                cursor: pointer;
+                opacity: 0.4;
+                transition: all 0.3s ease;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+
+              .item-delete-btn:hover {
+                color: #c0392b;
+                opacity: 1;
+                transform: scale(1.1);
+              }
+
+              .side-cart-footer {
+                padding: 24px;
+                background: #fff;
+                border-top: 1px solid #f0ece6;
+              }
+
+              .side-cart-total-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                color: #1a1a1a;
+              }
+
+              .total-val {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 24px;
+                font-weight: 600;
+              }
+
+              .btn-checkout {
+                display: block;
+                background: #1a1a1a;
+                color: #fff;
+                text-align: center;
+                padding: 16px;
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                text-decoration: none;
+                margin-bottom: 10px;
+                transition: background 0.3s;
+              }
+
+              .btn-checkout:hover { background: #b18d2b; }
+
+              .btn-view-cart {
+                display: block;
+                text-align: center;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: #1a1a1a;
+                text-decoration: underline;
+                text-underline-offset: 4px;
+              }
+
+              /* ── MOBILE OVERRIDES ── */
+              @media (max-width: 768px) {
+                .side-cart-drawer {
+                  width: 85%;
+                }
+                .side-cart-title {
+                  font-size: 24px;
+                }
+              }
+            `}</style>
+
+            <div className="side-cart-header">
+              <h2 className="side-cart-title">Your <em>Cart</em></h2>
+              <button className="close-btn" onClick={onClose}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="side-cart-items">
+              {items.length === 0 ? (
+                <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+                  <ShoppingBag size={40} style={{ color: '#eee', marginBottom: '15px' }} />
+                  <p style={{ fontFamily: 'Cormorant Garamond', fontStyle: 'italic', color: '#999' }}>
+                    Your cart is currently empty
+                  </p>
                 </div>
-              ))
+              ) : (
+                <AnimatePresence>
+                  {items.map((item) => (
+                    <motion.div 
+                      key={`${item.category}-${item.id}`} 
+                      className="side-cart-item"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 50 }}
+                    >
+                      <div className="side-cart-img">
+                        <img src={item.image} alt={item.name} />
+                      </div>
+                      <div className="item-details">
+                        <h3 className="item-name">{item.name}</h3>
+                        <p className="item-price">${item.price.toLocaleString()}</p>
+                        
+                        <div className="item-actions">
+                          <div className="qty-mini">
+                            <button 
+                              className="qty-mini-btn" 
+                              onClick={() => updateQuantity(item.id, item.category, item.quantity - 1)}
+                            >
+                              <Minus size={10} />
+                            </button>
+                            <span className="qty-mini-val">{item.quantity}</span>
+                            <button 
+                              className="qty-mini-btn" 
+                              onClick={() => updateQuantity(item.id, item.category, item.quantity + 1)}
+                            >
+                              <Plus size={10} />
+                            </button>
+                          </div>
+
+                          <button 
+                            className="item-delete-btn"
+                            title="Remove item"
+                            onClick={() => removeFromCart(item.id, item.category)}
+                          >
+                            <Trash2 size={16} strokeWidth={1.5} />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )}
+            </div>
+
+            {items.length > 0 && (
+              <div className="side-cart-footer">
+                <div className="side-cart-total-row">
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 500 }}>Subtotal</span>
+                  <span className="total-val">${totalPrice.toLocaleString()}</span>
+                </div>
+                <Link href="/checkout" className="btn-checkout" onClick={onClose}>
+                  Checkout
+                </Link>
+                <Link href="/cart" className="btn-view-cart" onClick={onClose}>
+                  View Full Cart
+                </Link>
+              </div>
             )}
-          </div>
-
-          {/* Subtotal + Actions */}
-          <div className="p-4 space-y-4 border-t border-gray-600">
-            <div className="flex justify-between text-base font-bold text-gray-700 text-[20px]">
-              <span>Subtotal:</span>
-              <span className="text-[#E99246]">₹{subtotal.toLocaleString()}</span>
-            </div>
-
-            <hr className="border-t border-gray-600" />
-
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => router.push("/cart")}
-                className="w-[150px] h-[36px] text-sm bg-[#D4AF37] text-white rounded hover:brightness-110 mx-auto block"
-              >
-                View Cart
-              </button>
-              <button
-                onClick={() => router.push("/checkout")}
-                className="w-[150px] h-[36px] text-sm bg-[#D4AF37] text-white rounded hover:brightness-110 mx-auto block"
-              >
-                Checkout
-              </button>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

@@ -125,7 +125,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         /* ── HERO ── */
         .cp-hero {
           position: relative;
-          height: clamp(180px, 22vw, 300px);
+          height: clamp(180px, 22vw, 400px);
           overflow: hidden;
           margin-bottom: 44px;
           width: 100%;
@@ -162,7 +162,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
         }
         .cp-hero-h1 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(44px, 7vw, 90px);
+          font-size: clamp(36px, 5vw, 64px);
           font-weight: 400; font-style: italic; line-height: 0.9;
           color: #fff; margin-bottom: 16px;
         }

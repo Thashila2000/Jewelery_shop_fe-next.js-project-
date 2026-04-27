@@ -44,8 +44,7 @@ const categories = [
 
 export default function CollectionsPage() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  // ✅ isMobile initialises as false on both server and client,
-  //    then updates after mount — no hydration mismatch.
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -178,7 +177,7 @@ export default function CollectionsPage() {
 
                 <h2 className="col-name">{cat.name}</h2>
 
-                {/* ✅ Use isMobile state instead of typeof window check */}
+                {/* Use isMobile state instead of typeof window check */}
                 <AnimatePresence>
                   {(hoveredId === cat.id || isMobile) && (
                     <motion.div
