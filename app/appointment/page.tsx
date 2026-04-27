@@ -51,8 +51,8 @@ const BUDGETS = [
 const TIMES = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
 
 const LOCATIONS = [
- 
-  { id: "london",  label: "Kandy Showroom",  sub: "N0 123, Main Street, Kandy" },
+
+  { id: "Kandy",  label: "Kandy Showroom",  sub: "No 123, Main Street, Kandy" },
   { id: "virtual", label: "Virtual Consultation", sub: "Video call — worldwide" },
 ];
 
@@ -373,12 +373,14 @@ export default function AppointmentPage() {
     setDir(1);
     setStep(s => s + 1);
     setError(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prev = () => {
     setDir(-1);
     setStep(s => s - 1);
     setError(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const submit = async () => {
@@ -388,6 +390,7 @@ export default function AppointmentPage() {
     await new Promise(r => setTimeout(r, 1400));
     setSubmitting(false);
     setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
@@ -461,13 +464,14 @@ export default function AppointmentPage() {
         }
         .ap-banner-right {
           position: relative; z-index: 2;
-          display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+          display: flex; flex-direction: column; gap: 10px; align-items: flex-start;
         }
         .ap-banner-info {
           display: flex; align-items: center; gap: 8px;
           font-size: 11px; font-weight: 300; color: rgba(240,236,228,0.45);
+          white-space: nowrap;
         }
-        .ap-banner-info svg { color: #b18d2b; }
+        .ap-banner-info svg { color: #b18d2b; flex-shrink: 0; }
 
         /* ── LAYOUT ── */
         .ap-layout {
@@ -707,6 +711,7 @@ export default function AppointmentPage() {
           display: flex; justify-content: space-between; align-items: center;
           margin-top: 36px; padding-top: 28px;
           border-top: 1px solid #f0ece6;
+          gap: 16px;
         }
         .ap-btn-back {
           display: flex; align-items: center; gap: 6px;
@@ -878,7 +883,7 @@ export default function AppointmentPage() {
                         )}
                       </div>
                     ))}
-                  </div>
+                  </div> 
                   <div className="ap-steps-labels">
                     {STEPS.map(s => (
                       <span key={s.num} className={`ap-step-label ${step === s.num ? "active" : step > s.num ? "done" : ""}`}>

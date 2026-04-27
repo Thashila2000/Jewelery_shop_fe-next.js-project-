@@ -186,7 +186,7 @@ export default function UserReviews() {
             <div key={stat.label} style={{ textAlign: "center", flex: 1 }}>
               <p style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: "clamp(20px, 6vw, 52px)", // Dynamic scaling for numbers
+                fontSize: "clamp(20px, 6vw, 52px)",
                 fontWeight: 400, lineHeight: 1.2,
                 letterSpacing: "-0.02em", color: "#b18d2b", marginBottom: 4,
               }}>
