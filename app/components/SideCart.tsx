@@ -13,290 +13,320 @@ interface SideCartProps {
 
 export default function SideCart({ isOpen, onClose }: SideCartProps) {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navH = scrolled ? 64 : 80;
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* BLURRED OVERLAY */}
+          {/* BLURRED OVERLAY — starts below navbar so navbar stays unblurred */}
           <motion.div
-            className="side-cart-overlay"
+            className="sc-overlay"
+            style={{ top: navH }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
 
-          {/* DRAWER */}
+          {/* DRAWER — starts below navbar, height tracks navbar size */}
           <motion.div
-            className="side-cart-drawer"
+            className="sc-drawer"
+            style={{ top: navH, height: `calc(100vh - ${navH}px)` }}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
           >
             <style>{`
-              .side-cart-overlay {
+              @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display@0&display=swap');
+
+              /* Overlay covers only the area below the navbar — navbar stays clear */
+              .sc-overlay {
                 position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.2);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                z-index: 999;
+                left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.25);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+                z-index: 199;
               }
 
-              .side-cart-drawer {
+              /* Drawer: top and height set dynamically via style prop */
+              .sc-drawer {
                 position: fixed;
-                top: 0;
                 right: 0;
-                width: 420px;
-                height: 100vh;
+                width: 400px;
                 background: #ffffff;
-                z-index: 1000;
+                z-index: 200;
                 display: flex;
                 flex-direction: column;
-                box-shadow: -10px 0 50px rgba(0,0,0,0.1);
+                box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+                font-family: 'DM Sans', sans-serif;
               }
 
-              .side-cart-header {
-                padding: 30px 24px;
+              /* ── HEADER ── */
+              .sc-header {
+                padding: 24px 24px 20px;
                 border-bottom: 1px solid #f0ece6;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                flex-shrink: 0;
               }
-
-              .side-cart-title {
+              .sc-header-left {}
+              .sc-title {
                 font-family: 'Cormorant Garamond', serif;
-                font-size: 28px;
+                font-size: 26px;
                 font-weight: 500;
-                margin: 0;
+                margin: 0 0 2px;
                 color: #1a1a1a;
+                line-height: 1;
               }
-
-              .side-cart-title em {
-                font-style: italic;
-                color: #b18d2b;
+              .sc-title em { font-style: italic; color: #b18d2b; }
+              .sc-count {
+                font-size: 10px;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: #bbb;
+                font-weight: 300;
               }
-
-              .close-btn {
-                background: none;
-                border: none;
-                cursor: pointer;
-                color: #1a1a1a;
-                padding: 5px;
+              .sc-close {
+                background: none; border: none; cursor: pointer;
+                color: #888; padding: 6px;
+                transition: color 0.2s, transform 0.2s;
+                display: flex; align-items: center; justify-content: center;
               }
+              .sc-close:hover { color: #1a1a1a; transform: rotate(90deg); }
 
-              .side-cart-items {
+              /* ── ITEMS ── */
+              .sc-items {
                 flex: 1;
                 overflow-y: auto;
-                padding: 24px;
+                padding: 20px 24px;
               }
+              .sc-items::-webkit-scrollbar { width: 4px; }
+              .sc-items::-webkit-scrollbar-track { background: transparent; }
+              .sc-items::-webkit-scrollbar-thumb { background: #e8e4de; border-radius: 2px; }
 
-              .side-cart-item {
-                display: flex;
-                gap: 16px;
-                padding-bottom: 20px;
-                margin-bottom: 20px;
+              /* Empty state */
+              .sc-empty {
+                display: flex; flex-direction: column;
+                align-items: center; justify-content: center;
+                height: 100%; gap: 14px; text-align: center;
+                padding: 40px 24px;
+              }
+              .sc-empty-icon { color: #e8e4de; }
+              .sc-empty-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 22px; font-style: italic; color: #aaa;
+                margin: 0;
+              }
+              .sc-empty-sub {
+                font-size: 12px; font-weight: 300; color: #ccc; margin: 0;
+              }
+              .sc-empty-link {
+                display: inline-flex; align-items: center; gap: 6px;
+                padding: 10px 22px; background: #1a1a1a; color: #fff;
+                font-size: 9px; font-weight: 500; letter-spacing: 0.3em;
+                text-transform: uppercase; text-decoration: none;
+                transition: background 0.3s; margin-top: 8px;
+              }
+              .sc-empty-link:hover { background: #b18d2b; }
+
+              /* Item */
+              .sc-item {
+                display: flex; gap: 14px;
+                padding-bottom: 18px; margin-bottom: 18px;
                 border-bottom: 1px solid #f5f3ef;
               }
+              .sc-item:last-child { border-bottom: none; margin-bottom: 0; }
 
-              .side-cart-img {
-                width: 80px;
-                height: 100px;
-                background: #f7f7f7;
-                overflow: hidden;
+              .sc-item-img {
+                width: 76px; height: 90px;
+                background: #f5f3ef; overflow: hidden; flex-shrink: 0;
+                border: 1px solid #ece8e1;
+              }
+              .sc-item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+              .sc-item-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+
+              .sc-item-cat {
+                font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase;
+                color: #b18d2b; margin: 0;
+              }
+              .sc-item-name {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 16px; font-weight: 500; color: #1a1a1a;
+                margin: 0; line-height: 1.2;
+              }
+              .sc-item-meta {
+                font-size: 10px; font-weight: 300; color: #aaa;
+                margin: 0; line-height: 1.4;
+              }
+              .sc-item-price {
+                font-family: 'DM Serif Display', serif;
+                font-size: 17px; font-weight: 400; color: #1a1a1a;
+                margin: 4px 0 0;
+              }
+
+              .sc-item-actions {
+                display: flex; align-items: center;
+                justify-content: space-between; margin-top: 8px;
+              }
+
+              .sc-qty {
+                display: flex; align-items: center;
+                border: 1px solid #e0dbd4;
+              }
+              .sc-qty-btn {
+                background: none; border: none;
+                width: 26px; height: 26px;
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; color: #666;
+                transition: background 0.2s, color 0.2s;
+              }
+              .sc-qty-btn:hover { background: #f5f3ef; color: #1a1a1a; }
+              .sc-qty-val {
+                width: 28px; text-align: center;
+                font-size: 12px; font-weight: 400; color: #1a1a1a;
+                border-left: 1px solid #e0dbd4;
+                border-right: 1px solid #e0dbd4;
+                line-height: 26px;
+              }
+
+              .sc-del {
+                background: none; border: none; cursor: pointer;
+                color: #ccc; padding: 4px;
+                display: flex; align-items: center; justify-content: center;
+                transition: color 0.2s, transform 0.2s;
+              }
+              .sc-del:hover { color: #c0392b; transform: scale(1.15); }
+
+              /* ── FOOTER ── */
+              .sc-footer {
+                padding: 20px 24px 24px;
+                border-top: 1px solid #f0ece6;
+                background: #fff;
                 flex-shrink: 0;
               }
 
-              .side-cart-img img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+              .sc-subtotal {
+                display: flex; justify-content: space-between; align-items: baseline;
+                margin-bottom: 6px;
               }
-
-              .item-details { flex: 1; position: relative; }
-
-              .item-name {
-                font-family: 'Cormorant Garamond', serif;
-                font-size: 18px;
-                font-weight: 500;
-                margin: 0 0 4px;
-                color: #1a1a1a;
+              .sc-subtotal-lbl {
+                font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+                color: #aaa; font-weight: 400;
               }
-
-              .item-price {
-                font-family: 'DM Sans', sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                color: #444;
-                margin-bottom: 12px;
-              }
-
-              .item-actions {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-top: auto;
-              }
-
-              .qty-mini {
-                display: flex;
-                align-items: center;
-                border: 1px solid #e8e4de;
-                width: fit-content;
-              }
-
-              .qty-mini-btn {
-                background: none;
-                border: none;
-                width: 24px;
-                height: 24px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                color: #1a1a1a;
-              }
-
-              .qty-mini-val {
-                width: 30px;
-                text-align: center;
-                font-size: 12px;
-                color: #1a1a1a;
-              }
-
-              .item-delete-btn {
-                background: none;
-                border: none;
-                color: #1a1a1a;
-                cursor: pointer;
-                opacity: 0.4;
-                transition: all 0.3s ease;
-                padding: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }
-
-              .item-delete-btn:hover {
-                color: #c0392b;
-                opacity: 1;
-                transform: scale(1.1);
-              }
-
-              .side-cart-footer {
-                padding: 24px;
-                background: #fff;
-                border-top: 1px solid #f0ece6;
-              }
-
-              .side-cart-total-row {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 20px;
-                color: #1a1a1a;
-              }
-
-              .total-val {
+              .sc-subtotal-val {
                 font-family: 'DM Serif Display', serif;
-                font-size: 24px;
-                font-weight: 600;
+                font-size: 22px; font-weight: 400; color: #1a1a1a;
+              }
+              .sc-shipping-note {
+                font-size: 10px; font-weight: 300; color: #b18d2b;
+                margin: 0 0 18px; text-align: right;
               }
 
-              .btn-checkout {
-                display: block;
-                background: #1a1a1a;
-                color: #fff;
-                text-align: center;
-                padding: 16px;
-                font-size: 11px;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
+              .sc-btn-checkout {
+                display: flex; align-items: center; justify-content: center; gap: 8px;
+                width: 100%; padding: 14px;
+                background: #1a1a1a; color: #fff;
+                font-family: 'DM Sans', sans-serif;
+                font-size: 10px; font-weight: 500;
+                letter-spacing: 0.3em; text-transform: uppercase;
+                text-decoration: none; margin-bottom: 10px;
+                transition: background 0.35s, letter-spacing 0.3s;
+                border: none; cursor: pointer;
+              }
+              .sc-btn-checkout:hover { background: #b18d2b; letter-spacing: 0.38em; }
+
+              .sc-btn-viewcart {
+                display: block; text-align: center;
+                font-size: 10px; font-weight: 300; letter-spacing: 0.2em;
+                text-transform: uppercase; color: #888;
                 text-decoration: none;
-                margin-bottom: 10px;
-                transition: background 0.3s;
+                transition: color 0.3s;
               }
+              .sc-btn-viewcart:hover { color: #b18d2b; }
 
-              .btn-checkout:hover { background: #b18d2b; }
-
-              .btn-view-cart {
-                display: block;
-                text-align: center;
-                font-size: 10px;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                color: #1a1a1a;
-                text-decoration: underline;
-                text-underline-offset: 4px;
-              }
-
-              /* ── MOBILE OVERRIDES ── */
-              @media (max-width: 768px) {
-                .side-cart-drawer {
-                  width: 85%;
-                }
-                .side-cart-title {
-                  font-size: 24px;
-                }
+              /* ── MOBILE ── */
+              @media (max-width: 480px) {
+                .sc-drawer { width: 100%; }
+                .sc-title  { font-size: 22px; }
               }
             `}</style>
 
-            <div className="side-cart-header">
-              <h2 className="side-cart-title">Your <em>Cart</em></h2>
-              <button className="close-btn" onClick={onClose}>
-                <X size={20} />
+            {/* HEADER */}
+            <div className="sc-header">
+              <div className="sc-header-left">
+                <h2 className="sc-title">Your <em>Cart</em></h2>
+                <span className="sc-count">
+                  {totalItems} {totalItems === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <button className="sc-close" onClick={onClose} aria-label="Close cart">
+                <X size={18} />
               </button>
             </div>
 
-            <div className="side-cart-items">
+            {/* ITEMS */}
+            <div className="sc-items">
               {items.length === 0 ? (
-                <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-                  <ShoppingBag size={40} style={{ color: '#eee', marginBottom: '15px' }} />
-                  <p style={{ fontFamily: 'Cormorant Garamond', fontStyle: 'italic', color: '#999' }}>
-                    Your cart is currently empty
-                  </p>
+                <div className="sc-empty">
+                  <ShoppingBag size={44} className="sc-empty-icon" />
+                  <h3 className="sc-empty-title">Your cart is empty</h3>
+                  <p className="sc-empty-sub">Discover our handcrafted collections.</p>
+                  <Link href="/collections" className="sc-empty-link" onClick={onClose}>
+                    Browse Collections
+                  </Link>
                 </div>
               ) : (
                 <AnimatePresence>
-                  {items.map((item) => (
-                    <motion.div 
-                      key={`${item.category}-${item.id}`} 
-                      className="side-cart-item"
+                  {items.map(item => (
+                    <motion.div
+                      key={`${item.category}-${item.id}`}
+                      className="sc-item"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 50 }}
+                      exit={{ opacity: 0, x: 50, height: 0, padding: 0, margin: 0 }}
+                      transition={{ duration: 0.3 }}
+                      layout
                     >
-                      <div className="side-cart-img">
+                      <div className="sc-item-img">
                         <img src={item.image} alt={item.name} />
                       </div>
-                      <div className="item-details">
-                        <h3 className="item-name">{item.name}</h3>
-                        <p className="item-price">${item.price.toLocaleString()}</p>
-                        
-                        <div className="item-actions">
-                          <div className="qty-mini">
-                            <button 
-                              className="qty-mini-btn" 
-                              onClick={() => updateQuantity(item.id, item.category, item.quantity - 1)}
-                            >
+                      <div className="sc-item-body">
+                        <p className="sc-item-cat">{item.category}</p>
+                        <h3 className="sc-item-name">{item.name}</h3>
+                        <p className="sc-item-meta">
+                          {item.material}{item.stone ? ` · ${item.stone}` : ""}
+                        </p>
+                        <p className="sc-item-price">${item.price.toLocaleString()}</p>
+                        <div className="sc-item-actions">
+                          <div className="sc-qty">
+                            <button className="sc-qty-btn"
+                              onClick={() => updateQuantity(item.id, item.category, item.quantity - 1)}>
                               <Minus size={10} />
                             </button>
-                            <span className="qty-mini-val">{item.quantity}</span>
-                            <button 
-                              className="qty-mini-btn" 
-                              onClick={() => updateQuantity(item.id, item.category, item.quantity + 1)}
-                            >
+                            <span className="sc-qty-val">{item.quantity}</span>
+                            <button className="sc-qty-btn"
+                              onClick={() => updateQuantity(item.id, item.category, item.quantity + 1)}>
                               <Plus size={10} />
                             </button>
                           </div>
-
-                          <button 
-                            className="item-delete-btn"
-                            title="Remove item"
+                          <button className="sc-del"
                             onClick={() => removeFromCart(item.id, item.category)}
-                          >
-                            <Trash2 size={16} strokeWidth={1.5} />
+                            aria-label="Remove item">
+                            <Trash2 size={15} strokeWidth={1.5} />
                           </button>
                         </div>
                       </div>
@@ -306,16 +336,20 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               )}
             </div>
 
+            {/* FOOTER */}
             {items.length > 0 && (
-              <div className="side-cart-footer">
-                <div className="side-cart-total-row">
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 500 }}>Subtotal</span>
-                  <span className="total-val">${totalPrice.toLocaleString()}</span>
+              <div className="sc-footer">
+                <div className="sc-subtotal">
+                  <span className="sc-subtotal-lbl">Subtotal</span>
+                  <span className="sc-subtotal-val">${totalPrice.toLocaleString()}</span>
                 </div>
-                <Link href="/checkout" className="btn-checkout" onClick={onClose}>
-                  Checkout
+                <p className="sc-shipping-note">
+                  {totalPrice >= 3000 ? "✓ Free shipping applied" : `Add $${(3000 - totalPrice).toLocaleString()} more for free shipping`}
+                </p>
+                <Link href="/cart" className="sc-btn-checkout" onClick={onClose}>
+                  Proceed to Checkout
                 </Link>
-                <Link href="/cart" className="btn-view-cart" onClick={onClose}>
+                <Link href="/cart" className="sc-btn-viewcart" onClick={onClose}>
                   View Full Cart
                 </Link>
               </div>

@@ -4,20 +4,20 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Shield, Truck, ChevronRight, Check } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Shield, Truck, ChevronRight } from "lucide-react";
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
-  const [promoCode, setPromoCode]   = useState("");
+  const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
-  const [checkedOut,  setCheckedOut]  = useState(false);
+  const [checkedOut, setCheckedOut] = useState(false);
 
   const VALID_PROMO = "GOLD10";
-  const discount     = promoApplied ? totalPrice * 0.10 : 0;
-  const shipping     = totalPrice > 3000 ? 0 : 25;
-  const grandTotal   = totalPrice - discount + shipping;
+  const discount = promoApplied ? totalPrice * 0.10 : 0;
+  const shipping = totalPrice > 3000 ? 0 : 25;
+  const grandTotal = totalPrice - discount + shipping;
 
   const applyPromo = () => {
     if (promoCode.trim().toUpperCase() === VALID_PROMO) {
@@ -31,7 +31,10 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     setCheckingOut(true);
-    setTimeout(() => { setCheckingOut(false); setCheckedOut(true); }, 1800);
+    setTimeout(() => {
+      setCheckingOut(false);
+      setCheckedOut(true);
+    }, 1800);
   };
 
   return (
@@ -104,7 +107,7 @@ export default function CartPage() {
 
         .cart-cols {
           display: grid;
-          grid-template-columns: 1fr 100px 140px 120px; /* Adjusted last col for delete btn */
+          grid-template-columns: 1fr 100px 140px 120px;
           gap: 20px; align-items: center;
           padding: 0 0 15px;
           border-bottom: 1px solid #e8e4de;
@@ -171,12 +174,11 @@ export default function CartPage() {
           height: 34px; line-height: 34px;
         }
 
-        /* ── UPDATED TOTAL + DELETE ALIGNMENT ── */
         .cart-total-group {
           display: flex; 
           align-items: center; 
           justify-content: flex-end; 
-          gap: 15px; /* Space between price and trash icon */
+          gap: 15px;
         }
         .cart-item-total {
           font-family: 'DM Serif Display', serif;
@@ -268,16 +270,54 @@ export default function CartPage() {
         }
         .cart-trust-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #888; }
 
+        /* ── RESPONSIVE OVERRIDES ── */
         @media (max-width: 1024px) {
           .cart-layout { grid-template-columns: 1fr; }
-          .cart-summary { position: static; }
+          .cart-summary { position: static; margin-top: 40px; }
         }
+
         @media (max-width: 768px) {
           .cart-cols { display: none; }
-          .cart-item { grid-template-columns: 1fr; text-align: center; }
-          .cart-item-info { flex-direction: column; align-items: center; }
-          .cart-qty { margin: 10px auto; }
-          .cart-total-group { justify-content: center; margin-top: 10px; }
+
+          .cart-item {
+            grid-template-columns: 80px 1fr auto;
+            grid-template-rows: auto auto;
+            gap: 15px;
+            align-items: start;
+            padding: 20px 0;
+          }
+
+          .cart-item-info {
+            grid-column: 1 / span 2;
+            gap: 15px;
+          }
+
+          .cart-item-img {
+            width: 80px;
+            height: 100px;
+          }
+
+          .cart-item-price { display: none; }
+
+          .cart-qty {
+            grid-row: 2;
+            grid-column: 2;
+            margin: 0;
+            transform: scale(0.9);
+            transform-origin: left;
+          }
+
+          .cart-total-group {
+            grid-column: 3;
+            grid-row: 1 / span 2;
+            flex-direction: column-reverse;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 100%;
+            padding: 5px 0;
+          }
+
+          .cart-item-total { font-size: 16px; }
         }
       `}</style>
 
