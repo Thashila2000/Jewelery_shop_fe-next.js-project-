@@ -28,7 +28,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* BLURRED OVERLAY — starts below navbar so navbar stays unblurred */}
+          {/* BLURRED OVERLAY */}
           <motion.div
             className="sc-overlay"
             style={{ top: navH }}
@@ -38,7 +38,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
             onClick={onClose}
           />
 
-          {/* DRAWER — starts below navbar, height tracks navbar size */}
+          {/* DRAWER */}
           <motion.div
             className="sc-drawer"
             style={{ top: navH, height: `calc(100vh - ${navH}px)` }}
@@ -50,7 +50,6 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
             <style>{`
               @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display@0&display=swap');
 
-              /* Overlay covers only the area below the navbar — navbar stays clear */
               .sc-overlay {
                 position: fixed;
                 left: 0; right: 0; bottom: 0;
@@ -60,7 +59,6 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 z-index: 199;
               }
 
-              /* Drawer: top and height set dynamically via style prop */
               .sc-drawer {
                 position: fixed;
                 right: 0;
@@ -71,6 +69,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 flex-direction: column;
                 box-shadow: -8px 0 40px rgba(0,0,0,0.12);
                 font-family: 'DM Sans', sans-serif;
+                overflow: hidden; /* Prevent the drawer itself from scrolling */
               }
 
               /* ── HEADER ── */
@@ -82,7 +81,6 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 align-items: center;
                 flex-shrink: 0;
               }
-              .sc-header-left {}
               .sc-title {
                 font-family: 'Cormorant Garamond', serif;
                 font-size: 26px;
@@ -107,17 +105,17 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
               .sc-close:hover { color: #1a1a1a; transform: rotate(90deg); }
 
-              /* ── ITEMS ── */
+              /* ── ITEMS (The Scrollable Area) ── */
               .sc-items {
-                flex: 1;
+                flex: 1; /* This pushes the footer to the bottom */
                 overflow-y: auto;
                 padding: 20px 24px;
+                -webkit-overflow-scrolling: touch;
               }
               .sc-items::-webkit-scrollbar { width: 4px; }
               .sc-items::-webkit-scrollbar-track { background: transparent; }
               .sc-items::-webkit-scrollbar-thumb { background: #e8e4de; border-radius: 2px; }
 
-              /* Empty state */
               .sc-empty {
                 display: flex; flex-direction: column;
                 align-items: center; justify-content: center;
@@ -130,9 +128,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 font-size: 22px; font-style: italic; color: #aaa;
                 margin: 0;
               }
-              .sc-empty-sub {
-                font-size: 12px; font-weight: 300; color: #ccc; margin: 0;
-              }
+              .sc-empty-sub { font-size: 12px; font-weight: 300; color: #ccc; margin: 0; }
               .sc-empty-link {
                 display: inline-flex; align-items: center; gap: 6px;
                 padding: 10px 22px; background: #1a1a1a; color: #fff;
@@ -142,23 +138,19 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
               .sc-empty-link:hover { background: #b18d2b; }
 
-              /* Item */
               .sc-item {
                 display: flex; gap: 14px;
                 padding-bottom: 18px; margin-bottom: 18px;
                 border-bottom: 1px solid #f5f3ef;
               }
               .sc-item:last-child { border-bottom: none; margin-bottom: 0; }
-
               .sc-item-img {
                 width: 76px; height: 90px;
                 background: #f5f3ef; overflow: hidden; flex-shrink: 0;
                 border: 1px solid #ece8e1;
               }
               .sc-item-img img { width: 100%; height: 100%; object-fit: cover; }
-
               .sc-item-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-
               .sc-item-cat {
                 font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase;
                 color: #b18d2b; margin: 0;
@@ -168,25 +160,18 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 font-size: 16px; font-weight: 500; color: #1a1a1a;
                 margin: 0; line-height: 1.2;
               }
-              .sc-item-meta {
-                font-size: 10px; font-weight: 300; color: #aaa;
-                margin: 0; line-height: 1.4;
-              }
+              .sc-item-meta { font-size: 10px; font-weight: 300; color: #aaa; margin: 0; }
               .sc-item-price {
                 font-family: 'DM Serif Display', serif;
                 font-size: 17px; font-weight: 400; color: #1a1a1a;
                 margin: 4px 0 0;
               }
-
               .sc-item-actions {
                 display: flex; align-items: center;
                 justify-content: space-between; margin-top: 8px;
               }
 
-              .sc-qty {
-                display: flex; align-items: center;
-                border: 1px solid #e0dbd4;
-              }
+              .sc-qty { display: flex; align-items: center; border: 1px solid #e0dbd4; }
               .sc-qty-btn {
                 background: none; border: none;
                 width: 26px; height: 26px;
@@ -198,11 +183,9 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               .sc-qty-val {
                 width: 28px; text-align: center;
                 font-size: 12px; font-weight: 400; color: #1a1a1a;
-                border-left: 1px solid #e0dbd4;
-                border-right: 1px solid #e0dbd4;
+                border-left: 1px solid #e0dbd4; border-right: 1px solid #e0dbd4;
                 line-height: 26px;
               }
-
               .sc-del {
                 background: none; border: none; cursor: pointer;
                 color: #ccc; padding: 4px;
@@ -211,14 +194,13 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
               .sc-del:hover { color: #c0392b; transform: scale(1.15); }
 
-              /* ── FOOTER ── */
+              /* ── FOOTER (Always Fixed at Bottom) ── */
               .sc-footer {
-                padding: 20px 24px 24px;
+                padding: 20px 24px;
                 border-top: 1px solid #f0ece6;
                 background: #fff;
-                flex-shrink: 0;
+                flex-shrink: 0; /* Prevents the footer from squishing */
               }
-
               .sc-subtotal {
                 display: flex; justify-content: space-between; align-items: baseline;
                 margin-bottom: 6px;
@@ -233,9 +215,8 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
               .sc-shipping-note {
                 font-size: 10px; font-weight: 300; color: #b18d2b;
-                margin: 0 0 18px; text-align: right;
+                margin: 0 0 16px; text-align: right;
               }
-
               .sc-btn-checkout {
                 display: flex; align-items: center; justify-content: center; gap: 8px;
                 width: 100%; padding: 14px;
@@ -243,12 +224,11 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 font-family: 'DM Sans', sans-serif;
                 font-size: 10px; font-weight: 500;
                 letter-spacing: 0.3em; text-transform: uppercase;
-                text-decoration: none; margin-bottom: 10px;
+                text-decoration: none; margin-bottom: 12px;
                 transition: background 0.35s, letter-spacing 0.3s;
                 border: none; cursor: pointer;
               }
               .sc-btn-checkout:hover { background: #b18d2b; letter-spacing: 0.38em; }
-
               .sc-btn-viewcart {
                 display: block; text-align: center;
                 font-size: 10px; font-weight: 300; letter-spacing: 0.2em;
@@ -258,10 +238,10 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               }
               .sc-btn-viewcart:hover { color: #b18d2b; }
 
-              /* ── MOBILE ── */
               @media (max-width: 480px) {
                 .sc-drawer { width: 100%; }
-                .sc-title  { font-size: 22px; }
+                .sc-title { font-size: 22px; }
+                .sc-footer { padding-bottom: 30px; } /* Extra space for mobile home bars */
               }
             `}</style>
 
@@ -278,7 +258,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               </button>
             </div>
 
-            {/* ITEMS */}
+            {/* SCROLLABLE ITEMS */}
             <div className="sc-items">
               {items.length === 0 ? (
                 <div className="sc-empty">
@@ -291,7 +271,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
                 </div>
               ) : (
                 <AnimatePresence>
-                  {items.map(item => (
+                  {items.map((item) => (
                     <motion.div
                       key={`${item.category}-${item.id}`}
                       className="sc-item"
@@ -336,7 +316,7 @@ export default function SideCart({ isOpen, onClose }: SideCartProps) {
               )}
             </div>
 
-            {/* FOOTER */}
+            {/* FIXED FOOTER */}
             {items.length > 0 && (
               <div className="sc-footer">
                 <div className="sc-subtotal">

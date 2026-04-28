@@ -394,7 +394,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            <aside className="cart-summary">
+            <aside className="cart-summary">   
               <h2 className="cart-summary-title">Order Summary</h2>
               <div className="cart-summary-row">
                 <span>Subtotal</span>
