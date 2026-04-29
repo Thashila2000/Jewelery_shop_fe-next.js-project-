@@ -1,7 +1,7 @@
 "use client";
 
 import Carousel from "./components/Carousel";
-import AboutUsSection from "./components/AboutUsSection";
+
 import AngledSlider from "./components/AngledSlider";
 import SapphireBanner from "./components/SapphireBanner";
 import UserReviews from "./components/UserReviews";

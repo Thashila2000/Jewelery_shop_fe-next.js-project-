@@ -292,10 +292,9 @@ export default function AboutPage() {
           margin-bottom: 16px;
         }
         
-        
         .ab-value-body { 
-          fontFamily: "'Cormorant Garamond', serif",
-          font-size: 12px; 
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 15px; 
           font-weight: 300; 
           line-height: 1.8; 
           color: #666; 
@@ -328,8 +327,20 @@ export default function AboutPage() {
           .ab-cta-flex { flex-direction: column; text-align: center; }
         }
         @media (max-width: 768px) {
-          .ab-intro { grid-template-columns: 1fr; }
-          .ab-values-header { grid-template-columns: 1fr; }
+          .ab-hero { height: 60vh; } /* Reduced height on mobile to bring content up */
+          .ab-hero-eyebrow { margin-bottom: 14px; }
+          .ab-hero-title { margin-bottom: 24px; }
+          .ab-hero-sub { margin-bottom: 32px; }
+          .ab-hero-line { height: 40px; }
+          
+          .ab-intro { grid-template-columns: 1fr; min-height: auto; }
+          .ab-intro-left { padding: 50px 24px; }
+          .ab-intro-heading { margin-bottom: 16px; }
+          .ab-intro-rule { margin: 20px 0; }
+          
+          .ab-values { padding: 60px 0; }
+          .ab-values-header { grid-template-columns: 1fr; gap: 20px; margin-bottom: 40px; }
+          .ab-cta { padding: 60px 0; }
         }
       `}</style>
 

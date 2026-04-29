@@ -144,7 +144,7 @@ const Navbar: React.FC = () => {
                   className="block text-sm font-medium tracking-[0.2em] uppercase text-gray-400"
                   onClick={() => setMenuOpen(false)}
                 >
-                  Account / Login
+                  Account
                 </Link>
               </li>
             </ul>
