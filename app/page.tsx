@@ -22,11 +22,7 @@ export default function Home() {
         <Carousel />
       </section>
 
-     {/* About Section Container */}
-     <div className="relative z-40 w-full bg-white"> 
-        <AboutUsSection />
-      </div>
-    
+     
       
       
         <AngledSlider/>

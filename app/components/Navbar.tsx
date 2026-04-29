@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
+import { Menu, X, User, ShoppingBag } from "lucide-react";
 import SideCart from "../components/SideCart";
-
+import { useCart } from "@/app/context/CartContext";
 
 interface NavItem {
   name: string;
@@ -16,7 +16,9 @@ const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [openCart, setOpenCart] = useState<boolean>(false);
-  const [cartCount, setCartCount] = useState<number>(0);
+  
+  // Use the actual cart context for the count
+  const { totalItems } = useCart();
 
   const pathname = usePathname();
 
@@ -38,14 +40,13 @@ const Navbar: React.FC = () => {
     { name: "Contact Us", path: "/contact-us" },
   ];
 
-  // Define heights for consistent offsets
   const desktopHeight = "80px";
   const scrolledHeight = "64px";
   const currentHeight = scrolled ? scrolledHeight : desktopHeight;
 
   return (
     <>
-      {/* 1. BLUR OVERLAY - Starts below the Navbar */}
+      {/* 1. BLUR OVERLAY */}
       <div
         className={`fixed inset-0 z-[55] bg-black/20 backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden ${
           menuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
@@ -96,12 +97,16 @@ const Navbar: React.FC = () => {
 
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            <User className="w-5 h-5 text-gray-700 cursor-pointer hover:text-[#D4AF37]" />
-            <button onClick={() => setOpenCart(true)} className="relative">
+            {/* Updated Profile Icon to Link to Login */}
+            <Link href="/login" aria-label="Login">
+              <User className="w-5 h-5 text-gray-700 cursor-pointer hover:text-[#D4AF37] transition-colors" />
+            </Link>
+
+            <button onClick={() => setOpenCart(true)} className="relative" aria-label="Open cart">
               <ShoppingBag className="w-5 h-5 text-gray-700" />
-              {cartCount > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full">
-                  {cartCount}
+                  {totalItems}
                 </span>
               )}
             </button>
@@ -109,7 +114,7 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* 3. LEFT SIDEBAR DRAWER - Slides from left, sits under navbar */}
+      {/* 3. LEFT SIDEBAR DRAWER */}
       <aside
         className={`fixed left-0 z-[60] w-[280px] h-screen bg-white shadow-2xl transform transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden border-r border-gray-100 ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
@@ -126,19 +131,28 @@ const Navbar: React.FC = () => {
                     className={`block text-sm font-medium tracking-[0.2em] uppercase transition-colors ${
                       pathname === path ? "text-[#D4AF37]" : "text-gray-800"
                     }`}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => setMenuOpen(false)} 
                   >
                     {name}
                   </Link>
                 </li>
               ))}
+              {/* Added login to mobile menu for better UX */}
+              <li className="pt-4 border-t border-gray-50">
+                <Link
+                  href="/login"
+                  className="block text-sm font-medium tracking-[0.2em] uppercase text-gray-400"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Account / Login
+                </Link>
+              </li>
             </ul>
           </nav>
-          {/* Appointment button section removed from here */}
         </div>
       </aside>
 
-      {/* Side Cart */}
+      {/* Side Cart Component */}
       <SideCart isOpen={openCart} onClose={() => setOpenCart(false)} />
     </>
   );
