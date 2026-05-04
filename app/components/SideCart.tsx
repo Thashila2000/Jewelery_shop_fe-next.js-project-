@@ -4,7 +4,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "../(store)/context/CartContext";
 
 interface SideCartProps {
   isOpen: boolean;

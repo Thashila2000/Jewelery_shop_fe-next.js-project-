@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "../context/CartContext";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Shield, Truck, ChevronRight } from "lucide-react";
 
 export default function CartPage() {

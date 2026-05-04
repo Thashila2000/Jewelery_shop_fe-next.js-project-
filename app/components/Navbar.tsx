@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X, User, ShoppingBag } from "lucide-react";
 import SideCart from "../components/SideCart";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "../(store)/context/CartContext";
 
 interface NavItem {
   name: string;

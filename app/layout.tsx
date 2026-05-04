@@ -1,25 +1,34 @@
-// app/layout.tsx
-import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import { CartProvider } from "@/app/context/CartContext";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Kandy Jewellery | Timeless Elegance",
-  description: "Discover handcrafted jewellery collections inspired by Sri Lanka’s royal legacy.",
+import "./globals.css";
+
+import { Inter, Cormorant_Garamond } from "next/font/google"; 
+
+const inter = Inter({ 
+  subsets: ["latin"], 
+  variable: "--font-inter" 
+});
+
+const cormorant = Cormorant_Garamond({ 
+  subsets: ["latin"], 
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-cormorant" 
+});
+export const metadata: Metadata = {
+  title: "KANDY | Luxury Jewelry",
+  description: "Exquisite handcrafted jewelry pieces.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="antialiased">
-        <CartProvider>
-          <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </CartProvider>
+        {/* Navbar and Footer are REMOVED from here */}
+        {children}
       </body>
     </html>
   );

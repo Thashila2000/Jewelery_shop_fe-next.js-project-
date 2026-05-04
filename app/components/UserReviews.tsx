@@ -160,7 +160,7 @@ export default function UserReviews() {
               <ReviewCard key={`${review.id}-${idx}`} review={review} />
             ))}
           </div>
-        </div>
+        </div>  
 
         {/* ── UPDATED FOR MOBILE SINGLE-LINE ── */}
         <motion.div
@@ -168,11 +168,11 @@ export default function UserReviews() {
             display: "flex", 
             justifyContent: "center",
             alignItems: "center",
-            gap: "clamp(12px, 4vw, 120px)", // Tighter gap for small screens
+            gap: "clamp(12px, 4vw, 120px)",
             marginTop: 72, 
             padding: "56px 16px 0",
             borderTop: "1px solid rgba(177,141,43,0.15)",
-            flexWrap: "nowrap", // FORCE SINGLE LINE
+            flexWrap: "nowrap", 
             opacity: statOpacity,
             scale: statScale,
             width: "100%",
@@ -180,8 +180,8 @@ export default function UserReviews() {
         >
           {[
             { value: "2,400+", label: "Happy Clients" },
-            { value: "5.0", label: "Rating" }, // Shortened label for mobile fit
-            { value: "15 Yrs", label: "Excellence" }, // Shortened label for mobile fit
+            { value: "5.0", label: "Rating" },
+            { value: "15 Yrs", label: "Excellence" },
           ].map((stat) => (
             <div key={stat.label} style={{ textAlign: "center", flex: 1 }}>
               <p style={{
@@ -194,7 +194,7 @@ export default function UserReviews() {
               </p>
               <p style={{
                 fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "clamp(8px, 2.5vw, 11px)", // Dynamic scaling for labels
+                fontSize: "clamp(8px, 2.5vw, 11px)", 
                 fontWeight: 400, fontStyle: "italic",
                 letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(0,0,0,0.5)",
               }}>

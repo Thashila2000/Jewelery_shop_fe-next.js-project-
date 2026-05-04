@@ -1,11 +1,11 @@
 "use client";
 
-import Carousel from "./components/Carousel";
-
-import AngledSlider from "./components/AngledSlider";
-import SapphireBanner from "./components/SapphireBanner";
-import UserReviews from "./components/UserReviews";
-
+// app/(store)/page.tsx
+import Carousel from "../components/Carousel";
+import AngledSlider from "../components/AngledSlider";
+import SapphireBanner from "../components/SapphireBanner";
+import UserReviews from "../components/UserReviews";
+import Collections from "../components/Collections";
 const jewelryCollection = [
   { id: 1, url: "/RingsCtag.JPG", title: "The Solitaire" },
   { id: 2, url: "/NecklaceCtag.JPG", title: "Liquid Gold" },
@@ -22,7 +22,7 @@ export default function Home() {
         <Carousel />
       </section>
 
-     
+      <Collections/>
       
       
         <AngledSlider/>

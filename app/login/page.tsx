@@ -8,7 +8,6 @@ import Link from "next/link";
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "", name: "" });
 
   const toggleMode = () => setIsLogin(!isLogin);
 
@@ -21,10 +20,9 @@ export default function AuthPage() {
           min-height: 100vh;
           display: flex;
           justify-content: center;
-          align-items: flex-start; /* Align to top instead of center */
+          align-items: flex-start;
           background: #ffffff;
           font-family: 'DM Sans', sans-serif;
-          /* Adjusted padding-top to account for fixed Navbar height (80px + extra breathing room) */
           padding: 120px 24px 60px 24px; 
           color: #1a1a1a;
         }
@@ -38,7 +36,6 @@ export default function AuthPage() {
           position: relative;
         }
 
-        /* ── HEADER ── */
         .auth-header { text-align: center; margin-bottom: 40px; }
         .auth-title {
           font-family: 'Cormorant Garamond', serif;
@@ -55,7 +52,6 @@ export default function AuthPage() {
           color: #999;
         }
 
-        /* ── FORM ── */
         .auth-form { display: flex; flex-direction: column; gap: 24px; }
         
         .input-group { position: relative; }
@@ -82,16 +78,32 @@ export default function AuthPage() {
           border-bottom: 1px solid #e8e4de;
           font-size: 14px;
           color: #1a1a1a;
-          padding: 0 0 0 32px;
+          padding: 0 40px 0 32px; /* Added right padding for the eye icon */
           transition: border-color 0.3s;
           outline: none;
         }
+
+        /* ── REMOVE BROWSER DEFAULT EYE ICON ── */
+        .input-field::-ms-reveal,
+        .input-field::-ms-clear {
+          display: none;
+        }
+        .input-field::-webkit-contacts-auto-fill-button,
+        .input-field::-webkit-credentials-auto-fill-button {
+          visibility: hidden;
+          display: none !important;
+          pointer-events: none;
+          position: absolute;
+          right: 0;
+        }
+
         .input-field:focus { border-color: #b18d2b; }
 
         .input-icon {
           position: absolute;
           left: 0;
           color: #ccc;
+          pointer-events: none;
         }
 
         .password-toggle {
@@ -102,9 +114,14 @@ export default function AuthPage() {
           cursor: pointer;
           color: #ccc;
           padding: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.3s;
+          z-index: 10;
         }
+        .password-toggle:hover { color: #b18d2b; }
 
-        /* ── BUTTONS ── */
         .auth-submit {
           width: 100%;
           height: 54px;
@@ -152,7 +169,6 @@ export default function AuthPage() {
           margin-top: -12px;
         }
 
-        /* ── OR DIVIDER ── */
         .auth-or {
           display: flex;
           align-items: center;
@@ -163,7 +179,7 @@ export default function AuthPage() {
         .auth-or-text { font-size: 10px; color: #ccc; letter-spacing: 0.1em; }
 
         @media (max-width: 480px) {
-          .auth-container { padding-top: 100px; } /* Slightly less on mobile */
+          .auth-container { padding-top: 100px; }
           .auth-card { padding: 40px 24px; border: none; }
           .auth-title { font-size: 34px; }
         }
@@ -189,6 +205,7 @@ export default function AuthPage() {
             <AnimatePresence mode="wait">
               {!isLogin && (
                 <motion.div 
+                  key="name-field"
                   className="input-group"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -220,10 +237,12 @@ export default function AuthPage() {
                   className="input-field" 
                   placeholder="••••••••" 
                 />
+                {/* Custom Toggle Button - Browser defaults are hidden via CSS above */}
                 <button 
                   type="button" 
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

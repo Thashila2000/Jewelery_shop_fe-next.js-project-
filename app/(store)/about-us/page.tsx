@@ -430,7 +430,7 @@ export default function AboutPage() {
             </div>
             <div style={{ display: 'flex', gap: 15 }}>
               <Link href="/collections" className="ab-btn-dark">Explore</Link>
-              <Link href="/contact" className="ab-btn-outline">Contact</Link>
+              <Link href="/contact-us" className="ab-btn-outline">Contact</Link>
             </div>
           </div>
         </section>
