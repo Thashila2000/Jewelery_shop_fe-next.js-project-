@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Check, ShoppingBag, Heart, Shield, Truck, RotateCcw, Award } from "lucide-react";
 import { collectionsData } from "@/app/data/CollectionsData";
-import { useCart } from "@/app/context/CartContext";
+import { useCart } from "../../../context/CartContext";
 
 export default function ProductDetailPage({
   params,
