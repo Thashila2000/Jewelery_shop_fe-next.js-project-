@@ -4,7 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { 
   TrendingUp, Users, ShoppingBag, DollarSign, 
-  ArrowUpRight, ArrowDownRight, Globe, MapPin 
+  ArrowUpRight, ArrowDownRight, Globe, MapPin, Plus 
 } from "lucide-react";
 import { LatLngExpression } from "leaflet";
 
@@ -45,7 +45,7 @@ export default function DashboardPage() {
   const mapCenter: LatLngExpression = [30, 0];
 
   return (
-    <div className="al-dashboard-fade">
+    <div className="al-dashboard-fade" style={{ padding: "24px 16px" }}>
       {/* Import Leaflet CSS directly */}
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       
@@ -75,14 +75,34 @@ export default function DashboardPage() {
         .al-title { color: #111111; font-weight: 700; }
         .al-label-bold { color: #555555; font-weight: 700; letter-spacing: 0.05em; }
 
-        /* Ensure Leaflet doesn't clash with KANDY styles */
         .leaflet-container { font-family: 'DM Sans', sans-serif !important; }
       `}</style>
 
-      {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-serif italic al-title mb-1">Portfolio Insights</h2>
-        <p className="text-sm al-label-bold uppercase tracking-widest">Real-time store performance & logistics</p>
+      {/* Header - Synchronized Typography & Spacing */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div style={{ transform: "translateY(-10px)" }}> 
+          <h1 style={{ 
+            fontSize: 31, 
+            fontWeight: 750, 
+            color: "#1a1109", 
+            margin: 0, 
+            letterSpacing: "-0.03em",
+            lineHeight: 1,
+            fontFamily: "sans-serif"
+          }}>
+            Portfolio Insights
+          </h1>
+          <p style={{ 
+            fontSize: 12, 
+            fontWeight: 800, 
+            color: "#b18d2b", 
+            letterSpacing: "0.22em", 
+            textTransform: "uppercase", 
+            marginTop: 6 
+          }}>
+            Real-time store performance & logistics
+          </p>
+        </div>
       </div>
 
       {/* Stats Grid */}

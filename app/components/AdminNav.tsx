@@ -91,7 +91,7 @@ export default function AdminNav({ pathname }: { pathname: string }) {
             </svg>
           </div>
           <div className="al-brand-label">
-            <span className="al-brand-name">Kandy</span>
+            <span className="al-brand-name">Kandy Jewelry</span>
             <span className="al-brand-sub">Admin Console</span>
           </div>
         </Link>
