@@ -1,22 +1,26 @@
-import type { Metadata } from "next";
-
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 
-import { Inter, Cormorant_Garamond } from "next/font/google"; 
-
-const inter = Inter({ 
-  subsets: ["latin"], 
-  variable: "--font-inter" 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter"
 });
 
-const cormorant = Cormorant_Garamond({ 
-  subsets: ["latin"], 
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-cormorant" 
+  variable: "--font-cormorant"
 });
+
 export const metadata: Metadata = {
   title: "KANDY | Luxury Jewelry",
   description: "Exquisite handcrafted jewelry pieces.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -27,7 +31,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="antialiased">
-        {/* Navbar and Footer are REMOVED from here */}
         {children}
       </body>
     </html>

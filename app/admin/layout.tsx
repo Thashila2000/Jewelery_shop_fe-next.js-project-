@@ -90,8 +90,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .al-profile-menu-item:last-child { border-bottom: none; color: #c0392b; }
         .al-profile-menu-item svg { color: #b18d2b; flex-shrink: 0; }
 
-        .al-main { flex: 1; margin-left: ${SIDEBAR_W}px; padding-top: 64px; min-height: 100vh; }
-        .al-content { padding: clamp(20px, 3vw, 36px); max-width: 1400px; }
+        .al-main { flex: 1; margin-left: ${SIDEBAR_W}px; padding-top: 64px; min-height: 100vh; overflow-x: hidden; width: 0; min-width: 0; }
+.al-content { padding: clamp(20px, 3vw, 36px); max-width: 1400px; box-sizing: border-box; width: 100%; }
 
         @media (max-width: 1024px) {
           .al-sidebar { transform: translateX(-100%); }

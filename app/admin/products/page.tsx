@@ -14,7 +14,7 @@ const collectionsData = {
       { id: 2, name: "Sapphire Halo Ring", sku: "RNG-002", price: 6200, badge: "Limited", stone: "Blue Sapphire (2ct)", material: "18K Yellow Gold", karat: "18K", weight: 5.8, stock: 1, supplier: "Ceylon Gems Co.", image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80", tagline: "Royal blue brilliance", description: "A stunning Ceylon sapphire surrounded by a halo of pavé diamonds.", details: ["18K Yellow Gold", "Blue Sapphire 2ct", "Diamond halo 0.3ct total"], images: ["https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80"], careInstructions: "Avoid ultrasonic cleaners. Store in a soft pouch.", deliveryInfo: "Complimentary insured delivery in 3–5 business days." },
       { id: 3, name: "Pavé Diamond Band", sku: "RNG-003", price: 2900, badge: "New", stone: "Diamond (0.8ct)", material: "14K Rose Gold", karat: "14K", weight: 3.1, stock: 8, supplier: "Antwerp Gems", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&q=80", tagline: "Effortlessly luxurious", description: "Delicate rose gold band set with a continuous row of pavé diamonds.", details: ["14K Rose Gold", "Diamond 0.8ct total", "Stackable design"], images: ["https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&q=80"], careInstructions: "Remove before exercise. Polish with a lint-free cloth.", deliveryInfo: "Complimentary insured delivery in 3–5 business days." },
       { id: 4, name: "Emerald Cut Trilogy", sku: "RNG-004", price: 9400, badge: null, stone: "Emerald (3ct)", material: "Platinum", karat: "PT950", weight: 7.4, stock: 2, supplier: "Colombian Emeralds", image: "https://images.unsplash.com/photo-1589128777073-263566ae5e4d?w=400&q=80", tagline: "Bold, verdant, rare", description: "Three emerald-cut Colombian emeralds set in PT950 platinum.", details: ["PT950 Platinum", "Colombian Emeralds 3ct total", "Three-stone setting"], images: ["https://images.unsplash.com/photo-1589128777073-263566ae5e4d?w=400&q=80"], careInstructions: "Avoid steam cleaning. Use a damp soft cloth only.", deliveryInfo: "Complimentary insured delivery in 3–5 business days." },
-      { id: 5, name: "Classic Gold Band", sku: "RNG-005", price: 1200, badge: null, stone: "Metal Only", material: "22K Yellow Gold", karat: "22K", weight: 6.0, stock: 15, supplier: "Kandy Goldsmith", image: "https://starkle.in/cdn/shop/products/IMG_7018_2.jpg?v=1705598706&width=3456https", tagline: "Pure and enduring", description: "A traditional 22K yellow gold band, handcrafted by artisans in Kandy.", details: ["22K Yellow Gold", "Comfort-fit interior", "Sizes H–Z available"], images: ["https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=400&q=80"], careInstructions: "Polish regularly with a gold cloth. Store away from other metals.", deliveryInfo: "Complimentary insured delivery in 3–5 business days." },
+      { id: 5, name: "Classic Gold Band", sku: "RNG-005", price: 1200, badge: null, stone: "Metal Only", material: "22K Yellow Gold", karat: "22K", weight: 6.0, stock: 15, supplier: "Kandy Goldsmith", image: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=400&q=80", tagline: "Pure and enduring", description: "A traditional 22K yellow gold band, handcrafted by artisans in Kandy.", details: ["22K Yellow Gold", "Comfort-fit interior", "Sizes H–Z available"], images: ["https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=400&q=80"], careInstructions: "Polish regularly with a gold cloth. Store away from other metals.", deliveryInfo: "Complimentary insured delivery in 3–5 business days." },
     ]
   },
   necklaces: {
@@ -200,7 +200,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: any; onEdit: (p: 
 // ─── Shared input / textarea styles ──────────────────────────────────────────
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box",
-  fontSize: 13, fontWeight: 500,
+  fontSize: 16, fontWeight: 500,  // ≥16px prevents iOS Safari auto-zoom on focus
   color: "#1a1109",
   padding: "9px 12px",
   borderRadius: 8,
@@ -459,18 +459,18 @@ export default function AdminProductsPage() {
     <div style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}>
 
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
-        <div style={{ transform: "translateY(-10px)" }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <h1 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
             Inventory Vault
           </h1>
-          <p style={{ fontSize: 12, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.22em", textTransform: "uppercase", marginTop: 6 }}>
+          <p style={{ fontSize: 11, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.18em", textTransform: "uppercase", marginTop: 6 }}>
             KANDY Luxury Asset Management
           </p>
         </div>
         <button
           onClick={() => { setEditProduct(null); setModalOpen(true); }}
-          style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 24px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)" }}
+          style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 20px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)", flexShrink: 0 }}
         >
           <Plus size={14} /> Add Piece
         </button>
@@ -485,64 +485,73 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Controls */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 22 }}>
-        <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc" }}>
-          {Object.keys(data).map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
+
+        {/* Row 1 — category tabs (scrollable on mobile) */}
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
+          <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
+            {Object.keys(data).map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
+                style={{
+                  padding: "7px 16px", fontSize: 11, fontWeight: 800,
+                  letterSpacing: "0.08em", textTransform: "uppercase",
+                  borderRadius: 7, border: "none", cursor: "pointer", transition: "all 0.15s",
+                  whiteSpace: "nowrap",
+                  background: activeCategory === cat ? "#b18d2b" : "transparent",
+                  color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — search + filter + count */}
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div style={{ position: "relative", flex: 1 }}>
+            <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
+            <input
+              type="text"
+              placeholder="Search by name or SKU…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
+              onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
               style={{
-                padding: "7px 16px", fontSize: 11, fontWeight: 800,
-                letterSpacing: "0.08em", textTransform: "uppercase",
-                borderRadius: 7, border: "none", cursor: "pointer", transition: "all 0.15s",
-                background: activeCategory === cat ? "#b18d2b" : "transparent",
-                color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
+                width: "100%", boxSizing: "border-box",
+                paddingLeft: 36, paddingRight: 12, height: 38,
+                fontSize: 16, color: "#1a1109",
+                background: "#ffffff",
+                border: "0.5px solid #d9d0bc",
+                borderRadius: 9, outline: "none", transition: "border-color 0.15s",
               }}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+            />
+          </div>
 
-        <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
-          <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
-          <input
-            type="text"
-            placeholder="Search by name or SKU…"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
-            onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
+          <button
+            onClick={() => setFilterAlert(f => !f)}
             style={{
-              width: "100%", boxSizing: "border-box",
-              paddingLeft: 36, paddingRight: 12, height: 38,
-              fontSize: 13, color: "#1a1109",
-              background: "#ffffff",
-              border: "0.5px solid #d9d0bc",
-              borderRadius: 9, outline: "none", transition: "border-color 0.15s",
+              display: "flex", alignItems: "center", gap: 6,
+              height: 38, padding: "0 14px", flexShrink: 0,
+              fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
+              border: "0.5px solid",
+              borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
+              background:  filterAlert ? "#fffbeb" : "#ffffff",
+              color:       filterAlert ? "#92400e" : "#7a6a4a",
+              borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
             }}
-          />
+          >
+            <AlertTriangle size={12} /> Low stock
+          </button>
+
+          <p style={{ fontSize: 11, color: "#aaa", whiteSpace: "nowrap", flexShrink: 0 }}>
+            {filtered.length} of {products.length}
+          </p>
         </div>
 
-        <button
-          onClick={() => setFilterAlert(f => !f)}
-          style={{
-            display: "flex", alignItems: "center", gap: 6,
-            height: 38, padding: "0 14px",
-            fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
-            border: "0.5px solid",
-            borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
-            background:  filterAlert ? "#fffbeb" : "#ffffff",
-            color:       filterAlert ? "#92400e" : "#7a6a4a",
-            borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
-          }}
-        >
-          <AlertTriangle size={12} /> Low stock
-        </button>
-
-        <p style={{ fontSize: 11, color: "#aaa", marginLeft: "auto", whiteSpace: "nowrap" }}>
-          {filtered.length} of {products.length} pieces
-        </p>
       </div>
 
       {/* Grid */}
