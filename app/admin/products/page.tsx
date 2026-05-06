@@ -200,7 +200,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: any; onEdit: (p: 
 // ─── Shared input / textarea styles ──────────────────────────────────────────
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box",
-  fontSize: 16, fontWeight: 500,  // ≥16px prevents iOS Safari auto-zoom on focus
+  fontSize: 16, fontWeight: 500,
   color: "#1a1109",
   padding: "9px 12px",
   borderRadius: 8,
@@ -224,14 +224,12 @@ const EMPTY = {
   name: "", sku: "", price: "", badge: "",
   stone: "", material: "", karat: "18K",
   weight: "", stock: "", supplier: "",
-  // primary image (kept for backward compat with card display)
   image: "",
-  // new fields
   tagline: "",
   description: "",
-  details: "",        // textarea — newline-separated; split to string[] on save
-  image2: "",         // images[1]
-  image3: "",         // images[2]
+  details: "",
+  image2: "",
+  image3: "",
   careInstructions: "",
   deliveryInfo: "",
 };
@@ -248,35 +246,26 @@ function ProductModal({
   onClose: () => void;
   onSave: (f: any) => void;
 }) {
-  // Initialise form — reverse-map saved product fields back to flat form state
   const [form, setForm] = useState<FormState>(() => {
     if (!product) return EMPTY;
     return {
       ...EMPTY,
       ...product,
-      // details array → newline-joined string for the textarea
-      details: Array.isArray(product.details)
-        ? product.details.join("\n")
-        : (product.details ?? ""),
-      // images array → three separate URL fields
+      details: Array.isArray(product.details) ? product.details.join("\n") : (product.details ?? ""),
       image:  product.images?.[0] ?? product.image ?? "",
       image2: product.images?.[1] ?? "",
       image3: product.images?.[2] ?? "",
     };
   });
 
-  // Generic setter for plain text/number inputs
   const set = (k: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm(f => ({ ...f, [k]: e.target.value }));
 
-  // Setter for textareas
   const setArea = (k: keyof FormState) =>
     (e: React.ChangeEvent<HTMLTextAreaElement>) =>
       setForm(f => ({ ...f, [k]: e.target.value }));
 
-  // Field definitions: [key, label, type, fullWidth]
-  // type: "text" | "number" | "textarea"
   const fields: [keyof FormState, string, "text" | "number" | "textarea", boolean][] = [
     ["name",             "Product Name",                      "text",     true],
     ["sku",              "SKU",                               "text",     false],
@@ -333,10 +322,7 @@ function ProductModal({
               KANDY Luxury Asset Management
             </p>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: 4, display: "flex" }}
-          >
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: 4, display: "flex" }}>
             <X size={18} />
           </button>
         </div>
@@ -346,7 +332,6 @@ function ProductModal({
           {fields.map(([key, label, type, full]) => (
             <div key={key} style={{ gridColumn: full ? "1 / -1" : "auto" }}>
               <label style={labelStyle}>{label}</label>
-
               {type === "textarea" ? (
                 <textarea
                   rows={key === "description" ? 4 : 3}
@@ -354,11 +339,7 @@ function ProductModal({
                   onChange={setArea(key)}
                   onFocus={focusStyle}
                   onBlur={blurStyle}
-                  style={{
-                    ...inputStyle,
-                    resize: "vertical",
-                    fontFamily: "inherit",
-                  } as React.CSSProperties}
+                  style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" } as React.CSSProperties}
                 />
               ) : (
                 <input
@@ -376,10 +357,7 @@ function ProductModal({
 
         {/* Actions */}
         <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
-          <button
-            onClick={onClose}
-            style={{ fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 8, border: "0.5px solid #d9d0bc", background: "#ffffff", color: "#555", cursor: "pointer" }}
-          >
+          <button onClick={onClose} style={{ fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 8, border: "0.5px solid #d9d0bc", background: "#ffffff", color: "#555", cursor: "pointer" }}>
             Cancel
           </button>
           <button
@@ -390,12 +368,7 @@ function ProductModal({
                 weight: +form.weight,
                 stock:  +form.stock,
                 id: product?.id || Date.now(),
-                // convert newline-separated details → string[]
-                details: (form.details as string)
-                  .split("\n")
-                  .map((s: string) => s.trim())
-                  .filter(Boolean),
-                // collapse three URL fields → images[]
+                details: (form.details as string).split("\n").map((s: string) => s.trim()).filter(Boolean),
                 images: [form.image, form.image2, form.image3].filter(Boolean),
               };
               onSave(parsed);
@@ -456,139 +429,167 @@ export default function AdminProductsPage() {
     });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}>
+    <>
+      {/* ── Only change: animation keyframes matching dashboard ── */}
+      <style>{`
+        .al-dashboard-fade { animation: al-page-fade 0.4s ease-out; }
+        @keyframes al-page-fade {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <h1 style={{ fontSize: "clamp(22px, 6vw, 32px)", fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            Inventory Vault
-          </h1>
-          <p style={{ fontSize: 11, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.18em", textTransform: "uppercase", marginTop: 6 }}>
-            KANDY Luxury Asset Management
-          </p>
+      <div
+        className="al-dashboard-fade"
+        style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}
+      >
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
+          <div style={{ transform: "translateY(-10px)" }}>
+            {/* ── Only change: h1 font/size/weight matched exactly to dashboard ── */}
+            <h1 style={{
+              fontSize: 31,
+              fontWeight: 750,
+              color: "#1a1109",
+              margin: 0,
+              letterSpacing: "-0.03em",
+              lineHeight: 1,
+              fontFamily: "sans-serif",
+            }}>
+              Inventory Vault
+            </h1>
+            <p style={{
+              fontSize: 12,
+              fontWeight: 800,
+              color: "#b18d2b",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              marginTop: 6,
+            }}>
+              KANDY Luxury Asset Management
+            </p>
+          </div>
+          <button
+            onClick={() => { setEditProduct(null); setModalOpen(true); }}
+            style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 20px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)", flexShrink: 0 }}
+          >
+            <Plus size={14} /> Add Piece
+          </button>
         </div>
-        <button
-          onClick={() => { setEditProduct(null); setModalOpen(true); }}
-          style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 20px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)", flexShrink: 0 }}
-        >
-          <Plus size={14} /> Add Piece
-        </button>
-      </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}>
-        <StatCard label="Total Pieces" value={allProducts.length}                     sub="across all categories" />
-        <StatCard label="Vault Value"  value={`$${(totalValue / 1000).toFixed(0)}k`} sub="cost × stock" />
-        <StatCard label="Low Stock"    value={lowStockCount}                           sub="items need attention" />
-        <StatCard label="Collections"  value={Object.keys(data).length}               sub="active categories" />
-      </div>
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}>
+          <StatCard label="Total Pieces" value={allProducts.length}                     sub="across all categories" />
+          <StatCard label="Vault Value"  value={`$${(totalValue / 1000).toFixed(0)}k`} sub="cost × stock" />
+          <StatCard label="Low Stock"    value={lowStockCount}                           sub="items need attention" />
+          <StatCard label="Collections"  value={Object.keys(data).length}               sub="active categories" />
+        </div>
 
-      {/* Controls */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
+        {/* Controls */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
 
-        {/* Row 1 — category tabs (scrollable on mobile) */}
-        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
-          <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
-            {Object.keys(data).map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
+          {/* Category tabs */}
+          <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
+            <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
+              {Object.keys(data).map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
+                  style={{
+                    padding: "7px 16px", fontSize: 11, fontWeight: 800,
+                    letterSpacing: "0.08em", textTransform: "uppercase",
+                    borderRadius: 7, border: "none", cursor: "pointer", transition: "all 0.15s",
+                    whiteSpace: "nowrap",
+                    background: activeCategory === cat ? "#b18d2b" : "transparent",
+                    color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
+                  }}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search + filter + count */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <div style={{ position: "relative", flex: 1 }}>
+              <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
+              <input
+                type="text"
+                placeholder="Search by name or SKU…"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
+                onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
                 style={{
-                  padding: "7px 16px", fontSize: 11, fontWeight: 800,
-                  letterSpacing: "0.08em", textTransform: "uppercase",
-                  borderRadius: 7, border: "none", cursor: "pointer", transition: "all 0.15s",
-                  whiteSpace: "nowrap",
-                  background: activeCategory === cat ? "#b18d2b" : "transparent",
-                  color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
+                  width: "100%", boxSizing: "border-box",
+                  paddingLeft: 36, paddingRight: 12, height: 38,
+                  fontSize: 16, color: "#1a1109",
+                  background: "#ffffff",
+                  border: "0.5px solid #d9d0bc",
+                  borderRadius: 9, outline: "none", transition: "border-color 0.15s",
                 }}
-              >
-                {cat}
-              </button>
+              />
+            </div>
+
+            <button
+              onClick={() => setFilterAlert(f => !f)}
+              style={{
+                display: "flex", alignItems: "center", gap: 6,
+                height: 38, padding: "0 14px", flexShrink: 0,
+                fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
+                border: "0.5px solid",
+                borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
+                background:  filterAlert ? "#fffbeb" : "#ffffff",
+                color:       filterAlert ? "#92400e" : "#7a6a4a",
+                borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
+              }}
+            >
+              <AlertTriangle size={12} /> Low stock
+            </button>
+
+            <p style={{ fontSize: 11, color: "#aaa", whiteSpace: "nowrap", flexShrink: 0 }}>
+              {filtered.length} of {products.length}
+            </p>
+          </div>
+        </div>
+
+        {/* Grid */}
+        {filtered.length > 0 ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+            {filtered.map(p => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onEdit={(prod) => { setEditProduct(prod); setModalOpen(true); }}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
-        </div>
-
-        {/* Row 2 — search + filter + count */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <div style={{ position: "relative", flex: 1 }}>
-            <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
-            <input
-              type="text"
-              placeholder="Search by name or SKU…"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
-              onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
-              style={{
-                width: "100%", boxSizing: "border-box",
-                paddingLeft: 36, paddingRight: 12, height: 38,
-                fontSize: 16, color: "#1a1109",
-                background: "#ffffff",
-                border: "0.5px solid #d9d0bc",
-                borderRadius: 9, outline: "none", transition: "border-color 0.15s",
-              }}
-            />
+        ) : (
+          <div style={{
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            padding: "72px 24px",
+            background: "#ffffff", borderRadius: 14,
+            border: "0.5px dashed #d9d0bc",
+          }}>
+            <div style={{ width: 44, height: 44, background: "#faf8f3", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+              <Search size={18} color="#c4b48a" />
+            </div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", margin: 0 }}>No assets found</p>
+            <p style={{ fontSize: 12, color: "#aaa", marginTop: 4 }}>Try adjusting your search or filters.</p>
           </div>
+        )}
 
-          <button
-            onClick={() => setFilterAlert(f => !f)}
-            style={{
-              display: "flex", alignItems: "center", gap: 6,
-              height: 38, padding: "0 14px", flexShrink: 0,
-              fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
-              border: "0.5px solid",
-              borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
-              background:  filterAlert ? "#fffbeb" : "#ffffff",
-              color:       filterAlert ? "#92400e" : "#7a6a4a",
-              borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
-            }}
-          >
-            <AlertTriangle size={12} /> Low stock
-          </button>
-
-          <p style={{ fontSize: 11, color: "#aaa", whiteSpace: "nowrap", flexShrink: 0 }}>
-            {filtered.length} of {products.length}
-          </p>
-        </div>
-
+        {/* Modal */}
+        {modalOpen && (
+          <ProductModal
+            product={editProduct}
+            onClose={() => { setModalOpen(false); setEditProduct(null); }}
+            onSave={handleSave}
+          />
+        )}
       </div>
-
-      {/* Grid */}
-      {filtered.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
-          {filtered.map(p => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              onEdit={(prod) => { setEditProduct(prod); setModalOpen(true); }}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
-      ) : (
-        <div style={{
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          padding: "72px 24px",
-          background: "#ffffff", borderRadius: 14,
-          border: "0.5px dashed #d9d0bc",
-        }}>
-          <div style={{ width: 44, height: 44, background: "#faf8f3", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-            <Search size={18} color="#c4b48a" />
-          </div>
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", margin: 0 }}>No assets found</p>
-          <p style={{ fontSize: 12, color: "#aaa", marginTop: 4 }}>Try adjusting your search or filters.</p>
-        </div>
-      )}
-
-      {/* Modal */}
-      {modalOpen && (
-        <ProductModal
-          product={editProduct}
-          onClose={() => { setModalOpen(false); setEditProduct(null); }}
-          onSave={handleSave}
-        />
-      )}
-    </div>
+    </>
   );
 }
