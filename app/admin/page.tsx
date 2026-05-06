@@ -44,6 +44,10 @@ export default function DashboardPage() {
           border-radius: 12px;
           padding: 16px 18px;
           transition: border-color 0.2s, box-shadow 0.2s;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          min-height: 140px; /* Ensures uniform height */
         }
         .db-card:hover {
           border-color: #b18d2b;
@@ -52,17 +56,27 @@ export default function DashboardPage() {
 
         /* ── Stat card icon box ── */
         .db-stat-icon {
-          width: 38px; height: 38px; border-radius: 8px;
+          width: 34px; height: 34px; border-radius: 8px;
           background: #faf8f3; border: 0.5px solid #ede8db;
           display: flex; align-items: center; justify-content: center;
-          color: #b18d2b; margin-bottom: 12px;
+          color: #b18d2b; margin-bottom: 8px;
+          flex-shrink: 0;
         }
 
+        /* ── Grid adjustment for 2x2 on Mobile ── */
         .db-grid-stats {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 12px;
+          grid-template-columns: repeat(2, 1fr); 
+          gap: 10px;
           margin-bottom: 28px;
+          align-items: stretch; /* Forces children to match height */
+        }
+
+        @media (min-width: 768px) {
+          .db-grid-stats {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+          }
         }
 
         .db-map-wrapper {
@@ -90,6 +104,12 @@ export default function DashboardPage() {
         }
 
         .leaflet-container { font-family: 'DM Sans', sans-serif !important; }
+
+        @media (max-width: 480px) {
+          .db-stat-value { font-size: 18px !important; }
+          .db-stat-label { font-size: 9px !important; line-height: 1.2; }
+          .db-card { padding: 12px; min-height: 130px; }
+        }
       `}</style>
 
       {/* ── Header ── */}
@@ -110,32 +130,42 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Stat Cards — products page style ── */}
+      {/* ── Stat Cards ── */}
       <div className="db-grid-stats">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div key={i} className="db-card">
-              <div className="db-stat-icon"><Icon size={18} strokeWidth={2} /></div>
-              <p style={{ fontSize: 10, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 6px" }}>
-                {stat.label}
-              </p>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-                <span style={{ fontSize: 24, fontWeight: 700, color: "#b18d2b", lineHeight: 1 }}>
-                  {stat.value}
-                </span>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, marginBottom: 2,
-                  color: stat.trendingUp ? "#166534" : "#be123c",
-                  display: "flex", alignItems: "center", gap: 2,
+              <div>
+                <div className="db-stat-icon"><Icon size={16} strokeWidth={2} /></div>
+                <p className="db-stat-label" style={{ 
+                  fontSize: 10, fontWeight: 700, color: "#a08c5b", 
+                  textTransform: "uppercase", letterSpacing: "0.12em", 
+                  margin: "0 0 4px", display: "-webkit-box", WebkitLineClamp: 1, 
+                  WebkitBoxOrient: "vertical", overflow: "hidden" 
                 }}>
-                  {stat.trendingUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                  {stat.change}
-                </span>
+                  {stat.label}
+                </p>
               </div>
-              <p style={{ fontSize: 11, color: "#999", marginTop: 4 }}>
-                {stat.trendingUp ? "vs last month" : "vs last month"}
-              </p>
+              
+              <div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 4, flexWrap: "wrap" }}>
+                  <span className="db-stat-value" style={{ fontSize: 22, fontWeight: 700, color: "#b18d2b", lineHeight: 1 }}>
+                    {stat.value}
+                  </span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, marginBottom: 1,
+                    color: stat.trendingUp ? "#166534" : "#be123c",
+                    display: "flex", alignItems: "center", gap: 1,
+                  }}>
+                    {stat.trendingUp ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
+                    {stat.change}
+                  </span>
+                </div>
+                <p style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
+                  vs last month
+                </p>
+              </div>
             </div>
           );
         })}
@@ -143,9 +173,7 @@ export default function DashboardPage() {
 
       {/* ── Map + Market Share ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12, marginBottom: 12 }}>
-
-        {/* Map card */}
-        <div className="db-card" style={{ gridColumn: "span 2" }}>
+        <div className="db-card" style={{ gridColumn: "span 2", minHeight: "auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <p className="db-section-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <Globe size={16} color="#b18d2b" /> Customer Geography
@@ -175,8 +203,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Market share card */}
-        <div className="db-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="db-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "auto" }}>
           <div>
             <p className="db-section-title">Market Share</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -195,14 +222,11 @@ export default function DashboardPage() {
             International shipping is performing 15% above target.
           </p>
         </div>
-
       </div>
 
       {/* ── Transactions + Traffic ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12 }}>
-
-        {/* Transactions */}
-        <div className="db-card db-table-wrap" style={{ gridColumn: "span 2" }}>
+        <div className="db-card db-table-wrap" style={{ gridColumn: "span 2", minHeight: "auto" }}>
           <p className="db-section-title">Latest Transactions</p>
           <table className="db-table">
             <thead>
@@ -241,8 +265,7 @@ export default function DashboardPage() {
           </table>
         </div>
 
-        {/* Traffic */}
-        <div className="db-card">
+        <div className="db-card" style={{ minHeight: "auto" }}>
           <p className="db-section-title">Traffic Analysis</p>
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
@@ -259,7 +282,6 @@ export default function DashboardPage() {
             compared to last week.
           </p>
         </div>
-
       </div>
     </div>
   );
