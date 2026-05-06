@@ -430,7 +430,7 @@ export default function AdminProductsPage() {
 
   return (
     <>
-      {/* ── Only change: animation keyframes matching dashboard ── */}
+      
       <style>{`
         .al-dashboard-fade { animation: al-page-fade 0.4s ease-out; }
         @keyframes al-page-fade {
@@ -446,7 +446,7 @@ export default function AdminProductsPage() {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
           <div style={{ transform: "translateY(-10px)" }}>
-            {/* ── Only change: h1 font/size/weight matched exactly to dashboard ── */}
+            
             <h1 style={{
               fontSize: 31,
               fontWeight: 750,
