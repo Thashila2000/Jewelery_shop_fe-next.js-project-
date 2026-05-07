@@ -391,6 +391,32 @@ export default function AppointmentPage() {
     setSubmitting(false);
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          phone: data.phone,
+          preferredDate: data.date,
+          note: data.message
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit appointment");
+      }
+
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      console.error("Appointment submission error:", error);
+      setError("Failed to submit appointment. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
