@@ -585,18 +585,33 @@ export default function ReviewsPage() {
       style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%" }}
     >
       {/* Header */}
-      <motion.div
-        variants={itemVariants}
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 12, flexWrap: "wrap" }}
-      >
-        <div>
-          <h1 style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
-            Reviews
-          </h1>
-          <p style={{ fontSize: 11, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.22em", textTransform: "uppercase", marginTop: 6 }}>
-            KANDY Client Sentiment
-          </p>
-        </div>
+<motion.div
+  variants={itemVariants}
+  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 12, flexWrap: "wrap" }}
+>
+  <div style={{ transform: "translateY(-10px)" }}>
+    <h1 style={{
+      fontSize: 31,
+      fontWeight: 750,
+      color: "#1a1109",
+      marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0,
+      letterSpacing: "-0.03em",
+      lineHeight: 1,
+      fontFamily: "sans-serif",
+    }}>
+      Reviews
+    </h1>
+    <p style={{
+      fontSize: 12,
+      fontWeight: 800,
+      color: "#b18d2b",
+      letterSpacing: "0.22em",
+      textTransform: "uppercase",
+      marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0,
+    }}>
+      KANDY Client Sentiment
+    </p>
+  </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {/* Rating filter pills */}
           <div style={{ display: "flex", gap: 4 }}>
