@@ -1,12 +1,43 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Search, Edit, Trash2, ArrowUpRight,
-  AlertTriangle, X
+  AlertTriangle, X, Package, DollarSign, Layers
 } from "lucide-react";
 
-// ─── Mock Data ───────────────────────────────────────────────────────────────
+// ─── Animation Variants ───────────────────────────────────────────────────────
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
+} as const;
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" as const } },
+};
+
+const cardVariants = {
+  hidden: { y: 24, opacity: 0, scale: 0.97 },
+  visible: { y: 0, opacity: 1, scale: 1, transition: { duration: 0.35, ease: "easeOut" as const } },
+  exit:   { y: -10, opacity: 0, scale: 0.96, transition: { duration: 0.2 } },
+};
+
+const modalOverlayVariants = {
+  hidden:  { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
+  exit:    { opacity: 0, transition: { duration: 0.2 } },
+};
+
+const modalVariants = {
+  hidden:  { opacity: 0, scale: 0.96, y: 16 },
+  visible: { opacity: 1, scale: 1,    y: 0,  transition: { duration: 0.28, ease: "easeOut" as const } },
+  exit:    { opacity: 0, scale: 0.96, y: 16, transition: { duration: 0.2 } },
+};
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
 const collectionsData = {
   rings: {
     products: [
@@ -38,7 +69,7 @@ const collectionsData = {
   }
 };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 const BADGE_STYLE = {
   New:        { bg: "#ecfdf5", color: "#065f46", border: "#6ee7b7" },
   Bestseller: { bg: "#fffbeb", color: "#92400e", border: "#fcd34d" },
@@ -52,13 +83,47 @@ function stockInfo(qty: number) {
 }
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub }: { label: string; value: any; sub?: string }) {
+function StatCard({
+  label, value, sub, icon: Icon,
+}: {
+  label: string;
+  value: any;
+  sub?: string;
+  icon: React.ComponentType<{ size?: number; color?: string }>;
+}) {
   return (
-    <div style={{ background: "#ffffff", border: "0.5px solid #e8e3d8", borderRadius: 12, padding: "16px 18px" }}>
-      <p style={{ fontSize: 10, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 6px" }}>{label}</p>
-      <p style={{ fontSize: 24, fontWeight: 700, color: "#b18d2b", margin: 0, lineHeight: 1 }}>{value}</p>
-      {sub && <p style={{ fontSize: 11, color: "#999", marginTop: 4 }}>{sub}</p>}
-    </div>
+    <motion.div
+      variants={itemVariants}
+      whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(177,141,43,0.13)" }}
+      style={{
+        background: "#ffffff", border: "0.5px solid #e8e3d8",
+        borderRadius: 14, padding: "18px 18px 14px",
+        position: "relative", overflow: "hidden",
+      }}
+    >
+      <div style={{
+        position: "absolute", top: 0, right: 0, width: 70, height: 70,
+        background: "radial-gradient(circle at top right, rgba(177,141,43,0.08), transparent 70%)",
+        pointerEvents: "none",
+      }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+        <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.14em", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
+          {label}
+        </p>
+        <div style={{
+          width: 28, height: 28, borderRadius: 8,
+          background: "rgba(177,141,43,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+        }}>
+          <Icon size={14} color="#b18d2b" />
+        </div>
+      </div>
+      <p style={{ fontSize: 24, fontWeight: 800, color: "#b18d2b", marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+        {value}
+      </p>
+      {sub && <p style={{ fontSize: 11, color: "#999", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{sub}</p>}
+    </motion.div>
   );
 }
 
@@ -69,30 +134,27 @@ function ProductCard({ product, onEdit, onDelete }: { product: any; onEdit: (p: 
   const stock = stockInfo(product.stock);
 
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <motion.div
+      whileHover={{ y: -6, boxShadow: "0 12px 32px rgba(177,141,43,0.14)" }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
       style={{
         background: "#ffffff",
         border: `0.5px solid ${hovered ? "#b18d2b" : "#e8e3d8"}`,
-        borderRadius: 12,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        boxShadow: hovered ? "0 6px 28px rgba(177,141,43,0.12)" : "0 1px 4px rgba(0,0,0,0.04)",
-        transition: "border-color 0.2s, box-shadow 0.2s",
+        borderRadius: 12, overflow: "hidden",
+        display: "flex", flexDirection: "column",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+        transition: "border-color 0.2s",
       }}
     >
       {/* Image */}
       <div style={{ position: "relative", height: 200, background: "#f5f3ee", overflow: "hidden", flexShrink: 0 }}>
-        <img
+        <motion.img
           src={product.images?.[0] ?? product.image}
           alt={product.name}
-          style={{
-            width: "100%", height: "100%", objectFit: "cover", display: "block",
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform 0.4s ease",
-          }}
+          animate={{ scale: hovered ? 1.06 : 1 }}
+          transition={{ duration: 0.45, ease: "easeOut" as const }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
         {badge && (
           <span style={{
@@ -101,9 +163,7 @@ function ProductCard({ product, onEdit, onDelete }: { product: any; onEdit: (p: 
             border: `0.5px solid ${badge.border}`,
             background: badge.bg, color: badge.color,
             letterSpacing: "0.1em", textTransform: "uppercase",
-          }}>
-            {product.badge}
-          </span>
+          }}>{product.badge}</span>
         )}
         {stock.alert && (
           <span style={{
@@ -114,102 +174,82 @@ function ProductCard({ product, onEdit, onDelete }: { product: any; onEdit: (p: 
             <AlertTriangle size={11} color={stock.dot} />
           </span>
         )}
-        <button
+        <motion.button
           onClick={() => onEdit(product)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: hovered ? 1 : 0 }}
+          whileTap={{ scale: 0.92 }}
           style={{
             position: "absolute", bottom: 10, right: 10,
             background: "#ffffff", border: "0.5px solid #e8e3d8",
             borderRadius: 7, padding: "6px 8px", cursor: "pointer",
-            opacity: hovered ? 1 : 0, transition: "opacity 0.2s",
             display: "flex", alignItems: "center",
           }}
         >
           <Edit size={12} color="#b18d2b" />
-        </button>
+        </motion.button>
       </div>
 
       {/* Body */}
       <div style={{ padding: "14px 14px 12px", flex: 1, display: "flex", flexDirection: "column", gap: 10, background: "#ffffff" }}>
-
-        {/* Name + SKU */}
         <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1109", lineHeight: 1.35, margin: "0 0 3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1109", lineHeight: 1.35, marginTop: 0, marginBottom: 3, marginLeft: 0, marginRight: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {product.name}
           </p>
-          <p style={{ fontSize: 10, color: "#999", letterSpacing: "0.14em", fontWeight: 600, textTransform: "uppercase", margin: 0 }}>
+          <p style={{ fontSize: 10, color: "#999", letterSpacing: "0.14em", fontWeight: 600, textTransform: "uppercase", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
             {product.sku}
           </p>
         </div>
 
-        {/* Price */}
-        <p style={{ fontSize: 17, fontWeight: 800, color: "#b18d2b", letterSpacing: "-0.02em", margin: 0 }}>
+        <p style={{ fontSize: 17, fontWeight: 800, color: "#b18d2b", letterSpacing: "-0.02em", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
           ${product.price.toLocaleString()}
         </p>
 
-        {/* Attribute grid */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 12px",
-          background: "#faf8f3", borderRadius: 8, padding: "10px 12px",
-          border: "0.5px solid #ede8db",
-        }}>
-          {[
-            ["Karat",    product.karat],
-            ["Weight",   `${product.weight}g`],
-            ["Stone",    product.stone],
-            ["Supplier", product.supplier],
-          ].map(([k, v]) => (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 12px", background: "#faf8f3", borderRadius: 8, padding: "10px 12px", border: "0.5px solid #ede8db" }}>
+          {[["Karat", product.karat], ["Weight", `${product.weight}g`], ["Stone", product.stone], ["Supplier", product.supplier]].map(([k, v]) => (
             <div key={k} style={{ minWidth: 0 }}>
-              <p style={{ fontSize: 9, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, margin: "0 0 3px" }}>{k}</p>
-              <p style={{ fontSize: 12, color: "#2d2520", fontWeight: 600, margin: 0, overflowWrap: "break-word", wordBreak: "break-word" }}>{v}</p>
+              <p style={{ fontSize: 9, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginTop: 0, marginBottom: 3, marginLeft: 0, marginRight: 0 }}>{k}</p>
+              <p style={{ fontSize: 12, color: "#2d2520", fontWeight: 600, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, overflowWrap: "break-word", wordBreak: "break-word" }}>{v}</p>
             </div>
           ))}
         </div>
 
-        {/* Stock pill */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 7,
-          padding: "7px 10px",
-          background: stock.bg,
-          border: `0.5px solid ${stock.border}`,
-          borderRadius: 8,
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", background: stock.bg, border: `0.5px solid ${stock.border}`, borderRadius: 8 }}>
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: stock.dot, flexShrink: 0 }} />
           <span style={{ fontSize: 11, fontWeight: 700, color: stock.color }}>{stock.label}</span>
           {stock.alert && <AlertTriangle size={11} style={{ marginLeft: "auto" }} color={stock.dot} />}
         </div>
 
-        {/* Footer */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 9, borderTop: "0.5px solid #ede8db", marginTop: "auto" }}>
-          <button
+          <motion.button
             onClick={() => onDelete(product.id)}
-            onMouseEnter={e => e.currentTarget.style.color = "#e11d48"}
-            onMouseLeave={e => e.currentTarget.style.color = "#bbb"}
-            style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", display: "flex", alignItems: "center", gap: 4, cursor: "pointer", background: "none", border: "none", padding: 0, transition: "color 0.15s" }}
+            whileHover={{ color: "#e11d48" } as any}
+            whileTap={{ scale: 0.94 }}
+            style={{ fontSize: 10, fontWeight: 700, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.08em", display: "flex", alignItems: "center", gap: 4, cursor: "pointer", background: "none", border: "none", padding: 0 }}
           >
             <Trash2 size={11} /> Remove
-          </button>
-          <button style={{ fontSize: 10, fontWeight: 800, color: "#b18d2b", textTransform: "uppercase", letterSpacing: "0.08em", display: "flex", alignItems: "center", gap: 3, cursor: "pointer", background: "none", border: "none", padding: 0 }}>
+          </motion.button>
+          <motion.button
+            whileHover={{ x: 3 }}
+            whileTap={{ scale: 0.94 }}
+            style={{ fontSize: 10, fontWeight: 800, color: "#b18d2b", textTransform: "uppercase", letterSpacing: "0.08em", display: "flex", alignItems: "center", gap: 3, cursor: "pointer", background: "none", border: "none", padding: 0 }}
+          >
             View <ArrowUpRight size={11} />
-          </button>
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-// ─── Shared input / textarea styles ──────────────────────────────────────────
+// ─── Shared input styles ───────────────────────────────────────────────────────
 const inputStyle: React.CSSProperties = {
   width: "100%", boxSizing: "border-box",
-  fontSize: 16, fontWeight: 500,
-  color: "#1a1109",
-  padding: "9px 12px",
-  borderRadius: 8,
-  border: "0.5px solid #d9d0bc",
-  background: "#faf8f3",
-  outline: "none",
-  transition: "border-color 0.15s, box-shadow 0.15s",
+  fontSize: 16, fontWeight: 500, color: "#1a1109",
+  padding: "9px 12px", borderRadius: 8,
+  border: "0.5px solid #d9d0bc", background: "#faf8f3",
+  outline: "none", transition: "border-color 0.15s, box-shadow 0.15s",
 };
-
 const focusStyle = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   e.target.style.borderColor = "#b18d2b";
   e.target.style.boxShadow = "0 0 0 3px rgba(177,141,43,0.12)";
@@ -219,38 +259,23 @@ const blurStyle = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) 
   e.target.style.boxShadow = "none";
 };
 
-// ─── EMPTY form state ─────────────────────────────────────────────────────────
+// ─── EMPTY form state ──────────────────────────────────────────────────────────
 const EMPTY = {
   name: "", sku: "", price: "", badge: "",
   stone: "", material: "", karat: "18K",
   weight: "", stock: "", supplier: "",
-  image: "",
-  tagline: "",
-  description: "",
-  details: "",
-  image2: "",
-  image3: "",
-  careInstructions: "",
-  deliveryInfo: "",
+  image: "", tagline: "", description: "",
+  details: "", image2: "", image3: "",
+  careInstructions: "", deliveryInfo: "",
 };
-
 type FormState = typeof EMPTY;
 
-// ─── Add / Edit Modal ─────────────────────────────────────────────────────────
-function ProductModal({
-  product,
-  onClose,
-  onSave,
-}: {
-  product: any;
-  onClose: () => void;
-  onSave: (f: any) => void;
-}) {
+// ─── Add / Edit Modal ──────────────────────────────────────────────────────────
+function ProductModal({ product, onClose, onSave }: { product: any; onClose: () => void; onSave: (f: any) => void }) {
   const [form, setForm] = useState<FormState>(() => {
     if (!product) return EMPTY;
     return {
-      ...EMPTY,
-      ...product,
+      ...EMPTY, ...product,
       details: Array.isArray(product.details) ? product.details.join("\n") : (product.details ?? ""),
       image:  product.images?.[0] ?? product.image ?? "",
       image2: product.images?.[1] ?? "",
@@ -258,87 +283,90 @@ function ProductModal({
     };
   });
 
-  const set = (k: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm(f => ({ ...f, [k]: e.target.value }));
-
-  const setArea = (k: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-      setForm(f => ({ ...f, [k]: e.target.value }));
+  const set     = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>)   => setForm(f => ({ ...f, [k]: e.target.value }));
+  const setArea = (k: keyof FormState) => (e: React.ChangeEvent<HTMLTextAreaElement>) => setForm(f => ({ ...f, [k]: e.target.value }));
 
   const fields: [keyof FormState, string, "text" | "number" | "textarea", boolean][] = [
-    ["name",             "Product Name",                      "text",     true],
-    ["sku",              "SKU",                               "text",     false],
-    ["tagline",          "Tagline",                           "text",     true],
-    ["price",            "Price (USD)",                       "number",   false],
-    ["karat",            "Karat",                             "text",     false],
-    ["weight",           "Weight (g)",                        "number",   false],
-    ["stone",            "Stone",                             "text",     false],
-    ["material",         "Material",                          "text",     false],
-    ["supplier",         "Supplier",                          "text",     false],
-    ["stock",            "Stock Qty",                         "number",   false],
-    ["badge",            "Badge (New / Bestseller / Limited)","text",     true],
-    ["image",            "Primary Image URL",                 "text",     true],
-    ["image2",           "Image 2 URL",                       "text",     true],
-    ["image3",           "Image 3 URL",                       "text",     true],
-    ["description",      "Description",                       "textarea", true],
-    ["details",          "Details (one detail per line)",     "textarea", true],
-    ["careInstructions", "Care Instructions",                 "textarea", true],
-    ["deliveryInfo",     "Delivery Info",                     "text",     true],
+    ["name",             "Product Name",                       "text",     true],
+    ["sku",              "SKU",                                "text",     false],
+    ["tagline",          "Tagline",                            "text",     true],
+    ["price",            "Price (USD)",                        "number",   false],
+    ["karat",            "Karat",                              "text",     false],
+    ["weight",           "Weight (g)",                         "number",   false],
+    ["stone",            "Stone",                              "text",     false],
+    ["material",         "Material",                           "text",     false],
+    ["supplier",         "Supplier",                           "text",     false],
+    ["stock",            "Stock Qty",                          "number",   false],
+    ["badge",            "Badge (New / Bestseller / Limited)", "text",     true],
+    ["image",            "Primary Image URL",                  "text",     true],
+    ["image2",           "Image 2 URL",                        "text",     true],
+    ["image3",           "Image 3 URL",                        "text",     true],
+    ["description",      "Description",                        "textarea", true],
+    ["details",          "Details (one detail per line)",      "textarea", true],
+    ["careInstructions", "Care Instructions",                  "textarea", true],
+    ["deliveryInfo",     "Delivery Info",                      "text",     true],
   ];
 
   const labelStyle: React.CSSProperties = {
-    display: "block",
-    fontSize: 10,
-    fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
-    color: "#a08c5b",
-    marginBottom: 6,
+    display: "block", fontSize: 10, fontWeight: 700,
+    textTransform: "uppercase", letterSpacing: "0.1em",
+    color: "#a08c5b", marginBottom: 6,
   };
 
   return (
-    <div style={{
-      position: "fixed", inset: 0,
-      background: "rgba(20,15,5,0.55)",
-      zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
-    }}>
-      <div style={{
-        background: "#ffffff",
-        borderRadius: 16,
-        border: "0.5px solid #d9d0bc",
-        width: "100%", maxWidth: 580,
-        maxHeight: "90vh", overflowY: "auto",
-        padding: "28px 28px 24px",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
-      }}>
+    <motion.div
+      variants={modalOverlayVariants}
+      initial="hidden" animate="visible" exit="exit"
+      style={{ position: "fixed", inset: 0, background: "rgba(20,15,5,0.55)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}
+      onClick={onClose}
+    >
+      <motion.div
+        variants={modalVariants}
+        initial="hidden" animate="visible" exit="exit"
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: "#ffffff", borderRadius: 16,
+          border: "0.5px solid #d9d0bc",
+          width: "100%", maxWidth: 580,
+          maxHeight: "90vh", overflowY: "auto",
+          padding: "28px 28px 24px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+        }}
+      >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 22 }}>
           <div>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1109", margin: 0 }}>
-              {product ? "Edit piece" : "Add new piece"}
-            </h2>
-            <p style={{ fontSize: 10, color: "#a08c5b", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4 }}>
-              KANDY Luxury Asset Management
-            </p>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{product ? "Edit piece" : "Add new piece"}</h2>
+            <p style={{ fontSize: 10, color: "#a08c5b", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginTop: 4, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>KANDY Luxury Asset Management</p>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: 4, display: "flex" }}>
+          <motion.button
+            onClick={onClose}
+            whileHover={{ rotate: 90, color: "#e11d48" } as any}
+            whileTap={{ scale: 0.88 }}
+            transition={{ duration: 0.2 }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: 4, display: "flex" }}
+          >
             <X size={18} />
-          </button>
+          </motion.button>
         </div>
 
         {/* Fields */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          {fields.map(([key, label, type, full]) => (
-            <div key={key} style={{ gridColumn: full ? "1 / -1" : "auto" }}>
+          {fields.map(([key, label, type, full], i) => (
+            <motion.div
+              key={key}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.02, duration: 0.25 }}
+              style={{ gridColumn: full ? "1 / -1" : "auto" }}
+            >
               <label style={labelStyle}>{label}</label>
               {type === "textarea" ? (
                 <textarea
                   rows={key === "description" ? 4 : 3}
                   value={form[key] as string}
                   onChange={setArea(key)}
-                  onFocus={focusStyle}
-                  onBlur={blurStyle}
+                  onFocus={focusStyle} onBlur={blurStyle}
                   style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" } as React.CSSProperties}
                 />
               ) : (
@@ -346,27 +374,31 @@ function ProductModal({
                   type={type}
                   value={form[key] as string}
                   onChange={set(key)}
-                  onFocus={focusStyle}
-                  onBlur={blurStyle}
+                  onFocus={focusStyle} onBlur={blurStyle}
                   style={inputStyle}
                 />
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Actions */}
         <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
-          <button onClick={onClose} style={{ fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 8, border: "0.5px solid #d9d0bc", background: "#ffffff", color: "#555", cursor: "pointer" }}>
+          <motion.button
+            onClick={onClose}
+            whileHover={{ background: "#f5f3ee" } as any}
+            whileTap={{ scale: 0.96 }}
+            style={{ fontSize: 12, fontWeight: 700, padding: "10px 20px", borderRadius: 8, border: "0.5px solid #d9d0bc", background: "#ffffff", color: "#555", cursor: "pointer" }}
+          >
             Cancel
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ background: "#9a7a24", boxShadow: "0 6px 20px rgba(177,141,43,0.3)" } as any}
+            whileTap={{ scale: 0.96 }}
             onClick={() => {
               const parsed = {
                 ...form,
-                price:  +form.price,
-                weight: +form.weight,
-                stock:  +form.stock,
+                price: +form.price, weight: +form.weight, stock: +form.stock,
                 id: product?.id || Date.now(),
                 details: (form.details as string).split("\n").map((s: string) => s.trim()).filter(Boolean),
                 images: [form.image, form.image2, form.image3].filter(Boolean),
@@ -376,10 +408,10 @@ function ProductModal({
             style={{ fontSize: 12, fontWeight: 800, padding: "10px 26px", borderRadius: 8, border: "none", background: "#b18d2b", color: "#ffffff", cursor: "pointer", letterSpacing: "0.04em" }}
           >
             Save piece
-          </button>
+          </motion.button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -409,9 +441,7 @@ export default function AdminProductsPage() {
     setData(prev => {
       const updated = { ...prev };
       if (editProduct) {
-        updated[activeCategory].products = updated[activeCategory].products.map(p =>
-          p.id === parsed.id ? parsed : p
-        );
+        updated[activeCategory].products = updated[activeCategory].products.map(p => p.id === parsed.id ? parsed : p);
       } else {
         updated[activeCategory].products = [...updated[activeCategory].products, parsed];
       }
@@ -429,159 +459,140 @@ export default function AdminProductsPage() {
     });
 
   return (
-    <>
-      
-      <style>{`
-        .al-dashboard-fade { animation: al-page-fade 0.4s ease-out; }
-        @keyframes al-page-fade {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-
-      <div
-        className="al-dashboard-fade"
-        style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}
+    <motion.div
+      initial="hidden" animate="visible" variants={containerVariants}
+      style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%" }}
+    >
+      {/* Header */}
+      <motion.div
+        variants={itemVariants}
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}
       >
-        {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
-          <div style={{ transform: "translateY(-10px)" }}>
-            
-            <h1 style={{
-              fontSize: 31,
-              fontWeight: 750,
-              color: "#1a1109",
-              margin: 0,
-              letterSpacing: "-0.03em",
-              lineHeight: 1,
-              fontFamily: "sans-serif",
-            }}>
-              Inventory Vault
-            </h1>
-            <p style={{
-              fontSize: 12,
-              fontWeight: 800,
-              color: "#b18d2b",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              marginTop: 6,
-            }}>
-              KANDY Luxury Asset Management
-            </p>
-          </div>
-          <button
-            onClick={() => { setEditProduct(null); setModalOpen(true); }}
-            style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 20px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)", flexShrink: 0 }}
-          >
-            <Plus size={14} /> Add Piece
-          </button>
+        <div style={{ transform: "translateY(-10px)" }}>
+          <h1 style={{ fontSize: 31, fontWeight: 750, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, letterSpacing: "-0.03em", lineHeight: 1, fontFamily: "sans-serif" }}>
+            Inventory Vault
+          </h1>
+          <p style={{ fontSize: 12, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.22em", textTransform: "uppercase", marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
+            KANDY Luxury Asset Management
+          </p>
         </div>
+        <motion.button
+          whileHover={{ background: "#9a7a24", boxShadow: "0 6px 20px rgba(177,141,43,0.3)" } as any}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => { setEditProduct(null); setModalOpen(true); }}
+          style={{ display: "flex", alignItems: "center", gap: 7, padding: "12px 20px", background: "#b18d2b", color: "#ffffff", border: "none", borderRadius: 9, fontSize: 12, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 12px rgba(177,141,43,0.2)", flexShrink: 0 }}
+        >
+          <Plus size={14} /> Add Piece
+        </motion.button>
+      </motion.div>
 
-        {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}>
-          <StatCard label="Total Pieces" value={allProducts.length}                     sub="across all categories" />
-          <StatCard label="Vault Value"  value={`$${(totalValue / 1000).toFixed(0)}k`} sub="cost × stock" />
-          <StatCard label="Low Stock"    value={lowStockCount}                           sub="items need attention" />
-          <StatCard label="Collections"  value={Object.keys(data).length}               sub="active categories" />
-        </div>
+      {/* Stats */}
+      <motion.div
+        variants={containerVariants}
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 28 }}
+      >
+        <StatCard label="Total Pieces" value={allProducts.length}                     sub="across all categories" icon={Package} />
+        <StatCard label="Vault Value"  value={`$${(totalValue / 1000).toFixed(0)}k`} sub="cost × stock"          icon={DollarSign} />
+        <StatCard label="Low Stock"    value={lowStockCount}                           sub="items need attention"  icon={AlertTriangle} />
+        <StatCard label="Collections"  value={Object.keys(data).length}               sub="active categories"     icon={Layers} />
+      </motion.div>
 
-        {/* Controls */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
-
-          {/* Category tabs */}
-          <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
-            <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
-              {Object.keys(data).map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
-                  style={{
-                    padding: "7px 16px", fontSize: 11, fontWeight: 800,
-                    letterSpacing: "0.08em", textTransform: "uppercase",
-                    borderRadius: 7, border: "none", cursor: "pointer", transition: "all 0.15s",
-                    whiteSpace: "nowrap",
-                    background: activeCategory === cat ? "#b18d2b" : "transparent",
-                    color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
-                  }}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search + filter + count */}
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
-              <input
-                type="text"
-                placeholder="Search by name or SKU…"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
-                onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
+      {/* Controls */}
+      <motion.div variants={itemVariants} style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
+          <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
+            {Object.keys(data).map(cat => (
+              <motion.button
+                key={cat}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveCategory(cat as keyof typeof collectionsData)}
                 style={{
-                  width: "100%", boxSizing: "border-box",
-                  paddingLeft: 36, paddingRight: 12, height: 38,
-                  fontSize: 16, color: "#1a1109",
-                  background: "#ffffff",
-                  border: "0.5px solid #d9d0bc",
-                  borderRadius: 9, outline: "none", transition: "border-color 0.15s",
+                  padding: "7px 16px", fontSize: 11, fontWeight: 800,
+                  letterSpacing: "0.08em", textTransform: "uppercase",
+                  borderRadius: 7, border: "none", cursor: "pointer",
+                  transition: "background 0.15s, color 0.15s", whiteSpace: "nowrap",
+                  background: activeCategory === cat ? "#b18d2b" : "transparent",
+                  color:      activeCategory === cat ? "#ffffff" : "#7a6a4a",
                 }}
-              />
-            </div>
-
-            <button
-              onClick={() => setFilterAlert(f => !f)}
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                height: 38, padding: "0 14px", flexShrink: 0,
-                fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
-                border: "0.5px solid",
-                borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
-                background:  filterAlert ? "#fffbeb" : "#ffffff",
-                color:       filterAlert ? "#92400e" : "#7a6a4a",
-                borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
-              }}
-            >
-              <AlertTriangle size={12} /> Low stock
-            </button>
-
-            <p style={{ fontSize: 11, color: "#aaa", whiteSpace: "nowrap", flexShrink: 0 }}>
-              {filtered.length} of {products.length}
-            </p>
-          </div>
-        </div>
-
-        {/* Grid */}
-        {filtered.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
-            {filtered.map(p => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onEdit={(prod) => { setEditProduct(prod); setModalOpen(true); }}
-                onDelete={handleDelete}
-              />
+              >
+                {cat}
+              </motion.button>
             ))}
           </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div style={{ position: "relative", flex: 1 }}>
+            <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
+            <input
+              type="text"
+              placeholder="Search by name or SKU…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onFocus={e => { e.target.style.borderColor = "#b18d2b"; }}
+              onBlur={e => { e.target.style.borderColor = "#d9d0bc"; }}
+              style={{ width: "100%", boxSizing: "border-box", paddingLeft: 36, paddingRight: 12, height: 38, fontSize: 16, color: "#1a1109", background: "#ffffff", border: "0.5px solid #d9d0bc", borderRadius: 9, outline: "none", transition: "border-color 0.15s" }}
+            />
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setFilterAlert(f => !f)}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              height: 38, padding: "0 14px", flexShrink: 0,
+              fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase",
+              border: "0.5px solid", borderRadius: 9, cursor: "pointer", transition: "all 0.15s",
+              background:  filterAlert ? "#fffbeb" : "#ffffff",
+              color:       filterAlert ? "#92400e" : "#7a6a4a",
+              borderColor: filterAlert ? "#fcd34d" : "#d9d0bc",
+            }}
+          >
+            <AlertTriangle size={12} /> Low stock
+          </motion.button>
+          <p style={{ fontSize: 11, color: "#aaa", whiteSpace: "nowrap", flexShrink: 0 }}>
+            {filtered.length} of {products.length}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Grid */}
+      <AnimatePresence mode="wait">
+        {filtered.length > 0 ? (
+          <motion.div
+            key={activeCategory + searchQuery + String(filterAlert)}
+            variants={containerVariants}
+            initial="hidden" animate="visible"
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}
+          >
+            {filtered.map(p => (
+              <motion.div key={p.id} variants={cardVariants}>
+                <ProductCard
+                  product={p}
+                  onEdit={(prod) => { setEditProduct(prod); setModalOpen(true); }}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
         ) : (
-          <div style={{
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            padding: "72px 24px",
-            background: "#ffffff", borderRadius: 14,
-            border: "0.5px dashed #d9d0bc",
-          }}>
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "72px 24px", background: "#ffffff", borderRadius: 14, border: "0.5px dashed #d9d0bc" }}
+          >
             <div style={{ width: 44, height: 44, background: "#faf8f3", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
               <Search size={18} color="#c4b48a" />
             </div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", margin: 0 }}>No assets found</p>
-            <p style={{ fontSize: 12, color: "#aaa", marginTop: 4 }}>Try adjusting your search or filters.</p>
-          </div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>No assets found</p>
+            <p style={{ fontSize: 12, color: "#aaa", marginTop: 4, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>Try adjusting your search or filters.</p>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Modal */}
+      {/* Modal */}
+      <AnimatePresence>
         {modalOpen && (
           <ProductModal
             product={editProduct}
@@ -589,7 +600,7 @@ export default function AdminProductsPage() {
             onSave={handleSave}
           />
         )}
-      </div>
-    </>
+      </AnimatePresence>
+    </motion.div>
   );
 }
