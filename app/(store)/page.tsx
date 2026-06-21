@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< Updated upstream:app/(store)/page.tsx
 // app/(store)/page.tsx
 import Carousel from "../components/Carousel";
 import AngledSlider from "../components/AngledSlider";
@@ -13,8 +14,33 @@ const jewelryCollection = [
   { id: 4, url: "/BraceletsCtag.WEBP", title: "Modern Cuff" },
   { id: 5, url: "/RingsCtag.JPG", title: "Eternal Band" },
 ];
+=======
+import { useEffect, useState } from "react";
+import Carousel from "./components/Carousel";
+import AboutUsSection from "./components/AboutUsSection";
+import AngledSlider from "./components/AngledSlider";
+import SapphireBanner from "./components/SapphireBanner";
+import UserReviews from "./components/UserReviews";
+
+interface Product {
+  _id: string;
+  name: string;
+  slug: string;
+  images: string[];
+  price: number;
+}
+>>>>>>> Stashed changes:app/page.tsx
 
 export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/featured`)
+      .then(res => res.json())
+      .then(data => setFeaturedProducts(data.products || []))
+      .catch(err => console.error("Failed to fetch featured products:", err));
+  }, []);
+
   return (
     <main className="w-full bg-white flex flex-col p-0 m-0 mt-20 md:mt-24">
       
@@ -25,7 +51,7 @@ export default function Home() {
       <Collections/>
       
       
-        <AngledSlider/>
+        <AngledSlider products={featuredProducts}/>
     
 
       {/* GUARANTEED SPACER:       */}

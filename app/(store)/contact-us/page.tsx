@@ -127,10 +127,31 @@ export default function ContactUsPage() {
     if (!form.message)     { setError("Please write a message before sending."); return; }
 
     setSending(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSending(false);
-    setSent(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${form.firstName} ${form.lastName}`,
+          email: form.email,
+          phone: form.phone,
+          message: form.message
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      setSent(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      setError("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

@@ -3,48 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const categories = [
-  {
-    id: 1,
-    name: "Rings",
-    tagline: "The Signature Series",
-    description: "Eternal symbols of devotion, from architectural solitaires to intricate pavé bands.",
-    image: "/RingsCtag.jpg",
-    href: "/collections/rings",
-    featured: true,
-  },
-  {
-    id: 2,
-    name: "Necklaces",
-    tagline: "Liquid Light",
-    description: "Chains and pendants crafted to catch the light at every movement.",
-    image: "/NecklaceCtag.jpg",
-    href: "/collections/necklaces",
-    featured: false,
-  },
-  {
-    id: 3,
-    name: "Earrings",
-    tagline: "Sculpted Radiance",
-    description: "From minimalist studs to high-drama drops.",
-    image: "/EarringsCtag.webp",
-    href: "/collections/earrings",
-    featured: false,
-  },
-  {
-    id: 4,
-    name: "Bracelets",
-    tagline: "Wrist Couture",
-    description: "Bangles and cuffs designed for effortless stacking.",
-    image: "/BraceletsCtag.webp",
-    href: "/collections/bracelets",
-    featured: false,
-  },
-];
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+}
 
 export default function CollectionsPage() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
-
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -52,6 +22,19 @@ export default function CollectionsPage() {
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`)
+      .then(res => res.json())
+      .then(data => {
+        setCategories(data.categories || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch categories:", err);
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -126,84 +109,89 @@ export default function CollectionsPage() {
         </motion.header>
 
         <div className="col-grid col-grid-rows">
-          {categories.map((cat, idx) => (
-            <motion.div
-              key={cat.id}
-              className={`col-card ${cat.featured ? "col-featured" : ""}`}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.1 }}
-              onMouseEnter={() => setHoveredId(cat.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              onClick={() => (window.location.href = cat.href)}
-            >
-              <div className="col-card-img">
-                <motion.img
-                  src={cat.image}
-                  alt={cat.name}
-                  animate={{
-                    scale: hoveredId === cat.id ? 1.08 : 1,
-                    filter: hoveredId === cat.id ? "brightness(0.5)" : "brightness(1)"
-                  }}
-                  transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "100px 0", gridColumn: "1 / -1" }}>
+              <p>Loading collections...</p>
+            </div>
+          ) : (
+            categories.map((cat, idx) => (
+              <motion.div
+                key={cat._id}
+                className={`col-card ${cat.featured ? "col-featured" : ""}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: idx * 0.1 }}
+                onMouseEnter={() => setHoveredId(cat._id)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() => (window.location.href = `/collections/${cat.slug}`)}
+              >
+                <div className="col-card-img">
+                  <motion.img
+                    src={cat.image}
+                    alt={cat.name}
+                    animate={{
+                      scale: hoveredId === cat._id ? 1.08 : 1,
+                      filter: hoveredId === cat._id ? "brightness(0.5)" : "brightness(1)"
+                    }}
+                    transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  />
+                </div>
+
+                <div className="col-card-vignette" />
+
+                <motion.div
+                  className="col-border-top"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: hoveredId === cat._id ? 1 : 0 }}
+                  style={{ transformOrigin: "left" }}
                 />
-              </div>
+                <motion.div
+                  className="col-border-bot"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: hoveredId === cat._id ? 1 : 0 }}
+                  style={{ transformOrigin: "right" }}
+                />
 
-              <div className="col-card-vignette" />
+                <span className="col-index">0{idx + 1}</span>
 
-              <motion.div
-                className="col-border-top"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: hoveredId === cat.id ? 1 : 0 }}
-                style={{ transformOrigin: "left" }}
-              />
-              <motion.div
-                className="col-border-bot"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: hoveredId === cat.id ? 1 : 0 }}
-                style={{ transformOrigin: "right" }}
-              />
+                <div className="col-content">
+                  <motion.span
+                    className="col-tagline"
+                    animate={{ y: hoveredId === cat._id ? -5 : 0 }}
+                  >
+                    {cat.description?.substring(0, 50)}...
+                  </motion.span>
 
-              <span className="col-index">0{idx + 1}</span>
+                  <h2 className="col-name">{cat.name}</h2>
 
-              <div className="col-content">
-                <motion.span
-                  className="col-tagline"
-                  animate={{ y: hoveredId === cat.id ? -5 : 0 }}
-                >
-                  {cat.tagline}
-                </motion.span>
-
-                <h2 className="col-name">{cat.name}</h2>
-
-                {/* Use isMobile state instead of typeof window check */}
-                <AnimatePresence>
-                  {(hoveredId === cat.id || isMobile) && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.4, ease: "circOut" }}
-                      style={{ overflow: "hidden" }}
-                    >
-                      <p className="col-desc">{cat.description}</p>
-                      <a
-                        className="col-btn"
-                        href={cat.href}
-                        onClick={(e) => e.stopPropagation()}
+                  <AnimatePresence>
+                    {(hoveredId === cat._id || isMobile) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: "circOut" }}
+                        style={{ overflow: "hidden" }}
                       >
-                        <span>View Collection</span>
-                        <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                          <path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </a>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          ))}
+                        <p className="col-desc">{cat.description}</p>
+                        <a
+                          className="col-btn"
+                          href={`/collections/${cat.slug}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span>View Collection</span>
+                          <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                            <path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </a>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </>

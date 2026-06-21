@@ -387,10 +387,6 @@ export default function AppointmentPage() {
     const err = validate(step, data);
     if (err) { setError(err); return; }
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setSubmitting(false);
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
     
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`, {
