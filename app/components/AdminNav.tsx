@@ -175,12 +175,8 @@ export default function AdminNav({ pathname }: { pathname: string }) {
               <div className="al-dropdown al-dropdown-profile">
                 <div className="al-dropdown-header">My Account</div>
                 <div className="al-dropdown-body">
-                  <Link href="/admin/settings" className="al-menu-item">
-                    <User size={14} /> Profile Settings
-                  </Link>
-                  <Link href="/admin/settings" className="al-menu-item">
-                    <Settings size={14} /> Preferences
-                  </Link>
+                  
+               
                   <div className="al-menu-item logout" style={{ borderTop: "1px solid #f3f4f6", marginTop: "4px" }}>
                     <LogOut size={14} /> Sign Out
                   </div>

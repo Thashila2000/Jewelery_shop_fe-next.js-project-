@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ShoppingBag, Search, Filter, MoreVertical,
+  ShoppingBag, Search, Filter, 
   ExternalLink, Clock, CheckCircle2, AlertCircle,
   Package, Truck, CreditCard, Gem, X, ChevronDown,
   TrendingUp, DollarSign, Eye, Printer, RefreshCw,
@@ -135,7 +135,7 @@ const KPI = [
   { label: "Pending",         value: "6",      sub: "Awaiting action",  icon: Clock,       trend: null },
 ];
 
-const STATUS_META: Record<string, { bg: string; color: string; border: string; icon: any; label: string }> = {
+const STATUS_META: Record<string, { bg: string; color: string; border: string; icon: React.ComponentType<{ size?: number; color?: string }>; label: string }> = {
   completed:  { bg: "#f0fdf4", color: "#166534", border: "#bbf7d0", icon: CheckCircle2, label: "Completed" },
   processing: { bg: "#eff6ff", color: "#1e40af", border: "#bfdbfe", icon: RefreshCw,    label: "Processing" },
   shipped:    { bg: "#f5f3ff", color: "#5b21b6", border: "#ddd6fe", icon: Truck,        label: "Shipped" },
@@ -155,13 +155,17 @@ function StatusBadge({ status }: { status: string }) {
       background: s.bg, color: s.color, border: `0.5px solid ${s.border}`,
       textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap",
     }}>
-      <Icon size={9} /> {s.label}
+      <Icon size={9} color={s.color} /> {s.label}
     </div>
   );
 }
 
 // ─── KPI Card ──────────────────────────────────────────────────────────────────
-function KpiCard({ label, value, sub, icon: Icon, trend }: any) {
+function KpiCard({ label, value, sub, icon: Icon, trend }: {
+  label: string; value: string; sub: string;
+  icon: React.ComponentType<{ size?: number; color?: string }>;
+  trend: string | null;
+}) {
   return (
     <motion.div
       variants={cardVariants}
@@ -173,16 +177,16 @@ function KpiCard({ label, value, sub, icon: Icon, trend }: any) {
     >
       <div style={{ position: "absolute", top: 0, right: 0, width: 60, height: 60, background: "radial-gradient(circle at top right, rgba(177,141,43,0.07), transparent 70%)", pointerEvents: "none" }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: 0 }}>{label}</p>
+        <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{label}</p>
         <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(177,141,43,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Icon size={14} color="#b18d2b" />
         </div>
       </div>
-      <p style={{ fontSize: 22, fontWeight: 800, color: "#1a1109", letterSpacing: "-0.03em", margin: "0 0 2px", lineHeight: 1 }}>{value}</p>
-      <p style={{ fontSize: 10, color: "#999", margin: 0 }}>{sub}</p>
+      <p style={{ fontSize: 22, fontWeight: 800, color: "#1a1a1a", letterSpacing: "-0.03em", marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0, lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: 10, color: "#999", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{sub}</p>
       {trend && (
         <div style={{ display: "inline-flex", alignItems: "center", gap: 3, marginTop: 8, fontSize: 9, fontWeight: 700, color: "#166534", background: "#f0fdf4", border: "0.5px solid #bbf7d0", borderRadius: 5, padding: "2px 6px" }}>
-          <TrendingUp size={9} /> {trend}
+          <TrendingUp size={9} color="#166534" /> {trend}
         </div>
       )}
     </motion.div>
@@ -194,7 +198,6 @@ function OrderDrawer({ order, onClose }: { order: any; onClose: () => void }) {
   const s = STATUS_META[order.status] ?? STATUS_META.pending;
   return (
     <>
-      {/* Overlay */}
       <motion.div
         key="overlay"
         variants={overlayVariants}
@@ -202,7 +205,6 @@ function OrderDrawer({ order, onClose }: { order: any; onClose: () => void }) {
         onClick={onClose}
         style={{ position: "fixed", inset: 0, background: "rgba(20,15,5,0.45)", zIndex: 300 }}
       />
-      {/* Drawer */}
       <motion.div
         key="drawer"
         variants={drawerVariants}
@@ -217,12 +219,12 @@ function OrderDrawer({ order, onClose }: { order: any; onClose: () => void }) {
           overflowY: "auto",
         }}
       >
-        {/* Drawer header */}
+        {/* Header */}
         <div style={{ padding: "20px 22px 16px", borderBottom: "0.5px solid #f0ece6", flexShrink: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
-              <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 4px" }}>Order Details</p>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.02em" }}>{order.id}</h2>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", letterSpacing: "0.18em", textTransform: "uppercase", marginTop: 0, marginBottom: 4, marginLeft: 0, marginRight: 0 }}>Order Details</p>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, letterSpacing: "-0.02em" }}>{order.id}</h2>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <StatusBadge status={order.status} />
@@ -236,55 +238,56 @@ function OrderDrawer({ order, onClose }: { order: any; onClose: () => void }) {
               </motion.button>
             </div>
           </div>
-          <p style={{ fontSize: 11, color: "#bbb", margin: "6px 0 0" }}><Calendar size={10} style={{ verticalAlign: "middle", marginRight: 4 }} />{order.date}</p>
+          <p style={{ fontSize: 11, color: "#bbb", marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
+            <Calendar size={10} style={{ verticalAlign: "middle", marginRight: 4 }} />{order.date}
+          </p>
         </div>
 
         <div style={{ padding: "20px 22px", flex: 1, display: "flex", flexDirection: "column", gap: 20 }}>
 
           {/* Item */}
           <div style={{ background: "#faf8f3", borderRadius: 12, border: "0.5px solid #ede8db", padding: "16px 16px 14px" }}>
-            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 10px" }}>Piece</p>
+            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", marginTop: 0, marginBottom: 10, marginLeft: 0, marginRight: 0 }}>Piece</p>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(177,141,43,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Gem size={18} color="#b18d2b" />
               </div>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1109", margin: 0 }}>{order.item}</p>
-                <p style={{ fontSize: 10, color: "#a08c5b", margin: "2px 0 0", fontWeight: 600 }}>{order.sku} · {order.category} · {order.type}</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{order.item}</p>
+                <p style={{ fontSize: 10, color: "#a08c5b", marginTop: 2, marginBottom: 0, marginLeft: 0, marginRight: 0, fontWeight: 600 }}>{order.sku} · {order.category} · {order.type}</p>
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 16px", marginTop: 14 }}>
               {[["Stone", order.stone], ["Metal", order.karat], ["Method", order.method]].map(([k, v]) => (
                 <div key={k}>
-                  <p style={{ fontSize: 9, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, margin: "0 0 2px" }}>{k}</p>
-                  <p style={{ fontSize: 12, fontWeight: 600, color: "#2d2520", margin: 0 }}>{v}</p>
+                  <p style={{ fontSize: 9, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0 }}>{k}</p>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: "#2d2520", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{v}</p>
                 </div>
               ))}
               <div>
-                <p style={{ fontSize: 9, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, margin: "0 0 2px" }}>Amount</p>
-                <p style={{ fontSize: 15, fontWeight: 800, color: "#b18d2b", margin: 0 }}>${order.amount.toLocaleString()}</p>
+                <p style={{ fontSize: 9, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0 }}>Amount</p>
+                <p style={{ fontSize: 15, fontWeight: 800, color: "#b18d2b", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>${order.amount.toLocaleString()}</p>
               </div>
             </div>
           </div>
 
           {/* Client */}
           <div style={{ background: "#faf8f3", borderRadius: 12, border: "0.5px solid #ede8db", padding: "16px" }}>
-            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 12px" }}>Client</p>
+            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", marginTop: 0, marginBottom: 12, marginLeft: 0, marginRight: 0 }}>Client</p>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg,#b18d2b,#d4af37)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#fff", flexShrink: 0 }}>
                 {order.customer.charAt(0)}
               </div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", margin: 0 }}>{order.customer}</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{order.customer}</p>
             </div>
-            {[
-              [Mail, order.email],
+            {([
+              [Mail,  order.email],
               [Phone, order.phone],
               [MapPin, order.address],
-            ].map(([Icon, val], i) => (
+            ] as [React.ComponentType<{ size?: number; color?: string; style?: React.CSSProperties }>, string][]).map(([Icon, val], i) => (
               <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: i < 2 ? 8 : 0 }}>
-                {/* @ts-ignore */}
                 <Icon size={12} color="#b18d2b" style={{ marginTop: 2, flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: "#555", lineHeight: 1.5 }}>{val as string}</span>
+                <span style={{ fontSize: 11, color: "#555", lineHeight: 1.5 }}>{val}</span>
               </div>
             ))}
           </div>
@@ -292,37 +295,34 @@ function OrderDrawer({ order, onClose }: { order: any; onClose: () => void }) {
           {/* Notes */}
           {order.notes && (
             <div style={{ background: "#fffbeb", border: "0.5px solid #fde68a", borderRadius: 10, padding: "12px 14px" }}>
-              <p style={{ fontSize: 9, fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 5px" }}>Notes</p>
-              <p style={{ fontSize: 12, color: "#78350f", lineHeight: 1.6, margin: 0 }}>{order.notes}</p>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.12em", marginTop: 0, marginBottom: 5, marginLeft: 0, marginRight: 0 }}>Notes</p>
+              <p style={{ fontSize: 12, color: "#78350f", lineHeight: 1.6, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{order.notes}</p>
             </div>
           )}
 
           {/* Timeline */}
           <div>
-            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 14px" }}>Order Timeline</p>
+            <p style={{ fontSize: 9, fontWeight: 700, color: "#a08c5b", textTransform: "uppercase", letterSpacing: "0.12em", marginTop: 0, marginBottom: 14, marginLeft: 0, marginRight: 0 }}>Order Timeline</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
               {order.timeline.map((step: any, i: number) => {
                 const isLast = i === order.timeline.length - 1;
                 const isActive = step.done && (isLast || !order.timeline[i + 1]?.done);
                 return (
                   <div key={i} style={{ display: "flex", gap: 12, paddingBottom: isLast ? 0 : 16, position: "relative" }}>
-                    {/* line */}
                     {!isLast && (
                       <div style={{ position: "absolute", left: 10, top: 22, bottom: 0, width: 1, background: step.done ? "#b18d2b" : "#e8e3d8" }} />
                     )}
-                    {/* dot */}
                     <div style={{
                       width: 21, height: 21, borderRadius: "50%", flexShrink: 0,
                       background: step.done ? (isActive ? "#b18d2b" : "#ede8db") : "#f5f3ee",
                       border: `1.5px solid ${step.done ? "#b18d2b" : "#ddd8cc"}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      zIndex: 1,
+                      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1,
                     }}>
                       {step.done && <CheckCircle2 size={11} color={isActive ? "#fff" : "#b18d2b"} />}
                     </div>
                     <div style={{ paddingTop: 2 }}>
-                      <p style={{ fontSize: 12, fontWeight: step.done ? 700 : 500, color: step.done ? "#1a1109" : "#bbb", margin: 0 }}>{step.label}</p>
-                      <p style={{ fontSize: 10, color: "#bbb", margin: "2px 0 0" }}>{step.time}</p>
+                      <p style={{ fontSize: 12, fontWeight: step.done ? 700 : 500, color: step.done ? "#1a1109" : "#bbb", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{step.label}</p>
+                      <p style={{ fontSize: 10, color: "#bbb", marginTop: 2, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{step.time}</p>
                     </div>
                   </div>
                 );
@@ -374,16 +374,31 @@ export default function OrdersPage() {
       initial="hidden" animate="visible" variants={containerVariants}
       style={{ minHeight: "100vh", background: "#f5f3ee", padding: "24px 16px 64px", boxSizing: "border-box", width: "100%" }}
     >
-      {/* Header */}
+      {/* Header — matches promotions page exactly */}
       <motion.div
         variants={itemVariants}
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 12, flexWrap: "wrap" }}
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, gap: 12, flexWrap: "wrap" }}
       >
-        <div>
-          <h1 style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 800, color: "#1a1109", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
+        <div style={{ transform: "translateY(-10px)" }}>
+          <h1 style={{
+            fontSize: 31,
+            fontWeight: 750,
+            color: "#1a1109",
+            marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0,
+            letterSpacing: "-0.03em",
+            lineHeight: 1,
+            fontFamily: "sans-serif",
+          }}>
             Order Registry
           </h1>
-          <p style={{ fontSize: 11, fontWeight: 800, color: "#b18d2b", letterSpacing: "0.22em", textTransform: "uppercase", marginTop: 6 }}>
+          <p style={{
+            fontSize: 12,
+            fontWeight: 800,
+            color: "#b18d2b",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0,
+          }}>
             KANDY Luxury Client Acquisitions
           </p>
         </div>
@@ -406,8 +421,6 @@ export default function OrdersPage() {
 
       {/* Controls */}
       <motion.div variants={itemVariants} style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
-
-        {/* Status tabs */}
         <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" as any }}>
           <div style={{ display: "flex", gap: 2, background: "#edeae2", padding: 4, borderRadius: 10, border: "0.5px solid #ddd8cc", width: "fit-content", minWidth: "100%" }}>
             {ALL_STATUSES.map(s => (
@@ -430,7 +443,6 @@ export default function OrdersPage() {
           </div>
         </div>
 
-        {/* Search + filter toggle */}
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <div style={{ position: "relative", flex: 1 }}>
             <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#aaa", pointerEvents: "none" }} />
@@ -462,15 +474,13 @@ export default function OrdersPage() {
         </div>
       </motion.div>
 
-      {/* Orders — mobile cards + desktop table */}
+      {/* Orders table */}
       <AnimatePresence mode="wait">
         {filtered.length > 0 ? (
           <motion.div key={statusFilter + searchTerm} variants={containerVariants} initial="hidden" animate="visible" exit={{ opacity: 0, transition: { duration: 0.15 } }}>
-
-            {/* ── Desktop table ── */}
             <motion.div
               variants={itemVariants}
-              style={{ background: "#fff", border: "0.5px solid #e8e3d8", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 20px -5px rgba(0,0,0,0.05)", display: "block" }}
+              style={{ background: "#fff", border: "0.5px solid #e8e3d8", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 20px -5px rgba(0,0,0,0.05)" }}
             >
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 720 }}>
@@ -490,8 +500,8 @@ export default function OrdersPage() {
                         style={{ borderBottom: i < filtered.length - 1 ? "0.5px solid #f5f3ee" : "none", cursor: "pointer" }}
                       >
                         <td style={{ padding: "16px 18px" }}>
-                          <p style={{ fontSize: 12, fontWeight: 800, color: "#1a1109", margin: 0 }}>{order.id}</p>
-                          <p style={{ fontSize: 9, color: "#bbb", margin: "2px 0 0", fontWeight: 500 }}>{order.type}</p>
+                          <p style={{ fontSize: 12, fontWeight: 800, color: "#1a1109", marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0 }}>{order.id}</p>
+                          <p style={{ fontSize: 9, color: "#bbb", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, fontWeight: 500 }}>{order.type}</p>
                         </td>
                         <td style={{ padding: "16px 18px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
@@ -499,8 +509,8 @@ export default function OrdersPage() {
                               {order.customer.charAt(0)}
                             </div>
                             <div style={{ minWidth: 0 }}>
-                              <p style={{ fontSize: 12, fontWeight: 700, color: "#2d2520", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{order.customer}</p>
-                              <p style={{ fontSize: 9, color: "#bbb", margin: 0 }}>{order.method}</p>
+                              <p style={{ fontSize: 12, fontWeight: 700, color: "#2d2520", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{order.customer}</p>
+                              <p style={{ fontSize: 9, color: "#bbb", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{order.method}</p>
                             </div>
                           </div>
                         </td>
@@ -508,19 +518,19 @@ export default function OrdersPage() {
                           <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                             <Gem size={12} color="#b18d2b" style={{ flexShrink: 0 }} />
                             <div style={{ minWidth: 0 }}>
-                              <p style={{ fontSize: 12, fontWeight: 600, color: "#1a1109", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 180 }}>{order.item}</p>
-                              <p style={{ fontSize: 9, color: "#a08c5b", margin: 0, fontWeight: 600 }}>{order.sku}</p>
+                              <p style={{ fontSize: 12, fontWeight: 600, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 180 }}>{order.item}</p>
+                              <p style={{ fontSize: 9, color: "#a08c5b", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, fontWeight: 600 }}>{order.sku}</p>
                             </div>
                           </div>
                         </td>
                         <td style={{ padding: "16px 18px" }}>
-                          <p style={{ fontSize: 14, fontWeight: 800, color: "#b18d2b", margin: 0 }}>${order.amount.toLocaleString()}</p>
+                          <p style={{ fontSize: 14, fontWeight: 800, color: "#b18d2b", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>${order.amount.toLocaleString()}</p>
                         </td>
                         <td style={{ padding: "16px 18px" }}>
                           <StatusBadge status={order.status} />
                         </td>
                         <td style={{ padding: "16px 18px" }}>
-                          <p style={{ fontSize: 11, color: "#888", margin: 0, whiteSpace: "nowrap" }}>{order.date}</p>
+                          <p style={{ fontSize: 11, color: "#888", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, whiteSpace: "nowrap" }}>{order.date}</p>
                         </td>
                         <td style={{ padding: "16px 18px" }}>
                           <motion.div
@@ -552,31 +562,6 @@ export default function OrdersPage() {
                 </div>
               </div>
             </motion.div>
-
-            {/* ── Mobile cards (hidden on wide screens via min-width table trick) ── */}
-            <div style={{ display: "none" }}>
-              {filtered.map((order, i) => (
-                <motion.div
-                  key={order.id}
-                  variants={cardVariants}
-                  whileHover={{ y: -3 }}
-                  onClick={() => setSelectedOrder(order)}
-                  style={{ background: "#fff", border: "0.5px solid #e8e3d8", borderRadius: 12, padding: "14px 14px 12px", cursor: "pointer", marginBottom: 10 }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: "#1a1109" }}>{order.id}</span>
-                    <StatusBadge status={order.status} />
-                  </div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: "#2d2520", margin: "0 0 2px" }}>{order.customer}</p>
-                  <p style={{ fontSize: 11, color: "#a08c5b", margin: "0 0 8px" }}>{order.item}</p>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 10, color: "#bbb" }}>{order.date}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: "#b18d2b" }}>${order.amount.toLocaleString()}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
           </motion.div>
         ) : (
           <motion.div
@@ -587,8 +572,8 @@ export default function OrdersPage() {
             <div style={{ width: 44, height: 44, background: "#faf8f3", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
               <Search size={18} color="#c4b48a" />
             </div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", margin: 0 }}>No orders found</p>
-            <p style={{ fontSize: 12, color: "#aaa", marginTop: 4 }}>Try adjusting your search or filters.</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: "#1a1109", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>No orders found</p>
+            <p style={{ fontSize: 12, color: "#aaa", marginTop: 4, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>Try adjusting your search or filters.</p>
           </motion.div>
         )}
       </AnimatePresence>

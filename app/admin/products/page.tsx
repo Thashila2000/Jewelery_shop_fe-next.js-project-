@@ -119,7 +119,7 @@ function StatCard({
           <Icon size={14} color="#b18d2b" />
         </div>
       </div>
-      <p style={{ fontSize: 24, fontWeight: 800, color: "#b18d2b", marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+      <p style={{ fontSize: 24, fontWeight: 800, color: "#1a1a1a", marginTop: 0, marginBottom: 2, marginLeft: 0, marginRight: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
         {value}
       </p>
       {sub && <p style={{ fontSize: 11, color: "#999", marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>{sub}</p>}
@@ -603,4 +603,4 @@ export default function AdminProductsPage() {
       </AnimatePresence>
     </motion.div>
   );
-}
+} 

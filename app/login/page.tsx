@@ -237,7 +237,7 @@ export default function AuthPage() {
                   className="input-field" 
                   placeholder="••••••••" 
                 />
-                {/* Custom Toggle Button - Browser defaults are hidden via CSS above */}
+                
                 <button 
                   type="button" 
                   className="password-toggle"
